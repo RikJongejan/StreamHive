@@ -6,3 +6,38 @@
 // - Uitloggen (sessie vernietigen)
 // - Wachtwoord reset afhandelen
 // Gebruikt: User model, PasswordReset model
+
+session_start();
+require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../models/User.php';
+
+$userModel = new User($pdo);
+$error = '';
+$action = $_GET['action'] ?? '';
+
+//login Code
+// login code
+if ($action === 'login' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    $email = trim($_POST['email'] ?? '');
+    $password = $_POST['password'] ?? '';
+
+    if (empty($email) || empty($password)) {
+        $error = 'Fill in all the fields.';
+    } else {
+        $user = $userModel->login($email, $password);
+        if ($user) {
+            $_SESSION['user_id']  = $user['id'];
+            $_SESSION['username'] = $user['username'];
+            $_SESSION['role']     = $user['role'];
+            header('Location: /video-platform/public/index.php');
+            exit;
+        } else {
+            $error = 'Invalid credentials';
+        }
+    }
+}
+
+// Altijd de view tonen als action=login (ook bij eerste bezoek en bij fouten)
+    if ($action === 'login') {
+        require_once __DIR__ . '/../../views/auth/login.php';
+}

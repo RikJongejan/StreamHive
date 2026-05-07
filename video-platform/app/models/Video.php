@@ -10,7 +10,7 @@
 class Video {
     private PDO $pdo;
 
-    public function __contruct(PDO $pdo){
+    public function __construct(PDO $pdo){
         $this->pdo = $pdo;
     }
     //alle videos ophalen
@@ -32,7 +32,7 @@ class Video {
     }
     //Nieuwe video opslaan/importeren
     public function upload(int $user_id, string $title, string $description, string $filename, string $thumbnail): bool {
-        $stmt = $this->pdo->prepare("INSERT INTO videos (user_id, title, description, filename, thumbnail) VALUES (?, ?, ?, ?, ?,)");
+        $stmt = $this->pdo->prepare("INSERT INTO videos (user_id, title, description, filename, thumbnail) VALUES (?, ?, ?, ?, ?)");
         return $stmt->execute([$user_id, $title, $description, $filename, $thumbnail]);
     }
     //videos verwijderen
@@ -44,6 +44,11 @@ class Video {
     public function incrementViews(int $id): bool {
         $stmt = $this->pdo->prepare("UPDATE videos SET views = views + 1 WHERE id = ?");
         return $stmt->execute([$id]);
+    }
+    public function getCategories(int $video_id): array {
+        $stmt = $this->pdo->prepare("SELECT * FROM categories WHERE video_id = ?");
+        $stmt->execute([$video_id]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
 }

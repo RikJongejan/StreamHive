@@ -29,11 +29,18 @@ class User {
         $stmt->execute([$email]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+    public function getByUsername(strinf $username): array|false {
+        $stmt = $this->pdo->prepare("SELECT * FROM users WHERE username = ?");
+        $stmt->execute([$username]);
+        return $stmt->detch(PDO::FETCH_ASSOC);
+    }
     //nieuwe gebruiker aanmaken
-    public function register(string $email, string $password): bool {
+    public function register(string $email, string $usermane, string $password): bool {
+        if ($this->getByEmail($email)) return false;
+        if ($this->getByUsername($username)) return false;
         $hashed = password_hash($password, PASSWORD_DEFAULT);
-        $stmt = $this->pdo->prepare("INSERT INTO users (email, password) VALUES (?, ?)");
-        return $stmt->execute([$email, $hashed]);
+        $stmt = $this->pdo->prepare("INSERT INTO users (email, username, password) VALUES (?, ?, ?)");
+        return $stmt->execute([$email, $username, $hashed]);
     }
     //controleren inloggen
     public function login(string $email, string $password): array|false {
@@ -44,9 +51,9 @@ class User {
         return false;
     }
     //profiel updaten
-    public function updateProfile(int $id, string $bio, string $profile_image): bool {
-        $stmt = $this->pdo->prepare("UPDATE users SET bio = ?, profile_image = ? WHERE id = ?");
-        return $stmt->execute([$bio, $profile_image, $id]);
+    public function updateProfile(int $id, string $username, string $bio, string $profile_image): bool {
+        $stmt = $this->pdo->prepare("UPDATE users SET username = ?, bio = ?, profile_image = ? WHERE id = ?");
+        return $stmt->execute([$username, $bio, $profile_image, $id]);
     }
     //account verwijderen
     public function deleteAccount(int $id): bool {
