@@ -30,4 +30,20 @@ class Video {
         $stmt->execute([$user_id]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    //Nieuwe video opslaan/importeren
+    public function upload(int $user_id, string $title, string $description, string $filename, string $thumbnail): bool {
+        $stmt = $this->pdo->prepare("INSERT INTO videos (user_id, title, description, filename, thumbnail) VALUES (?, ?, ?, ?, ?,)");
+        return $stmt->execute([$user_id, $title, $description, $filename, $thumbnail]);
+    }
+    //videos verwijderen
+    public function delete(int $id): bool {
+        $stmt = $this->pdo->prepare("DELETE FROM videos WHERE id = ?");
+        return $stmt->execute([$id]);
+    }
+    //views ophogen als iemand een video bekijkt
+    public function incrementViews(int $id): bool {
+        $stmt = $this->pdo->prepare("UPDATE videos SET views = views + 1 WHERE id = ?");
+        return $stmt->execute([$id]);
+    }
+
 }
