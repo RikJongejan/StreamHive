@@ -29,13 +29,13 @@ class User {
         $stmt->execute([$email]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
-    public function getByUsername(strinf $username): array|false {
+    public function getByUsername(string $username): array|false {
         $stmt = $this->pdo->prepare("SELECT * FROM users WHERE username = ?");
         $stmt->execute([$username]);
-        return $stmt->detch(PDO::FETCH_ASSOC);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
     //nieuwe gebruiker aanmaken
-    public function register(string $email, string $usermane, string $password): bool {
+    public function register(string $email, string $username, string $password): bool {
         if ($this->getByEmail($email)) return false;
         if ($this->getByUsername($username)) return false;
         $hashed = password_hash($password, PASSWORD_DEFAULT);
