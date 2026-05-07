@@ -6,3 +6,22 @@
 // - Weergaven bijhouden met incrementViews()
 // - Categorieen ophalen via getCategories()
 // Werkt met de 'videos' tabel in de database
+
+class Video {
+    private PDO $pdo;
+
+    public function __contruct(PDO $pdo){
+        $this->pdo = $pdo;
+    }
+    //alle videos ophalen
+    public function getAll(): array {
+        $stmt = $this->pdo->query("SELECT * FROM videos ORDER BY created_at DESC");
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    //een video ophalen op ID
+    public function getById(int $id): array|false {
+        $stmt = $this->pdo->prepare("SELECT * FROM videos WHERE id = ?");
+        $stmt->execute([$id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+}
