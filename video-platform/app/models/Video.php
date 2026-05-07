@@ -24,4 +24,10 @@ class Video {
         $stmt->execute([$id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+    //alle videos ophalen van een gebruiker
+    public function getByUser(int $user_id): array {
+        $stmt = $this->pdo->prepare("SELECT * FROM videos WHERE user_id = ?");
+        $stmt->execute([$user_id]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
