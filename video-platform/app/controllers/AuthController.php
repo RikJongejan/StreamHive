@@ -72,3 +72,9 @@ if ($action === 'register' && $_SERVER['REQUEST_METHOD'] === 'POST') {
 if ($action === 'register') {
     require_once __DIR__ . '/../../views/auth/register.php';
 }
+// Uitloggen
+if ($action === 'logout') {
+    session_destroy();
+    header('Location: /github/streamhive/video-platform/app/controllers/AuthController.php?action=login');
+    exit;
+}
