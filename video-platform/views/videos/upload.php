@@ -3,10 +3,6 @@
 // Formulier met: titel, beschrijving, videobestand, thumbnail, categorie
 // Alleen toegankelijk voor ingelogde gebruikers (check met requireLogin())
 // Bij submit verwerkt VideoController het bestand en slaat het op
-
-session_start();
-require_once __DIR__ . '/../../includes/auth.php';
-requireLogin();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -35,7 +31,7 @@ requireLogin();
         <label>thumbnail</label><br>
         <input type="file" name="thumbnail" accept="image/*"><br><br>
 
-        <button type="sunmit">Uploaden</button>
+        <button type="submit">Uploaden</button>
     </form>
     
 </body>

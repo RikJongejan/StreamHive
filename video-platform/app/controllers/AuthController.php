@@ -29,7 +29,7 @@ if ($action === 'login' && $_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['user_id']  = $user['id'];
             $_SESSION['username'] = $user['username'];
             $_SESSION['role']     = $user['role'];
-            header('Location: /github/streamhive/video-platform/views/index.php');
+            header('Location: /GitHub/StreamHive/video-platform/app/controllers/VideoController.php?action=index');
             exit;
         } else {
             $error = 'Invalid credentials';
@@ -62,7 +62,7 @@ if ($action === 'register' && $_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['username'] = $user['username'];
             $_SESSION['role'] = $user['role'];
-            header('Location: /github/streamhive/video-platform/views/index.php');
+            header('Location: /GitHub/StreamHive/video-platform/app/controllers/VideoController.php?action=index');
             exit;
         } else {
             $error = 'Email or Username already in use.';
