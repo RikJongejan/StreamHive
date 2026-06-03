@@ -1,0 +1,9 @@
+# Geüploade bestanden niet in git opslaan
+video-platform/uploads/videos/*
+video-platform/uploads/thumbnails/*
+video-platform/uploads/profile-images/*
+
+# Maar de lege mappen wel bewaren (git tracked geen lege mappen)
+!video-platform/uploads/videos/.gitkeep
+!video-platform/uploads/thumbnails/.gitkeep
+!video-platform/uploads/profile-images/.gitkeep

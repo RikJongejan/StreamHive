@@ -5,3 +5,24 @@
 // - Reactie verwijderen
 // - Reactie aanpassen met edit()
 // Werkt met de 'comments' tabel in de database
+
+class Comment {
+    private PDO $pdo;
+
+    public function __construct(PDO $pdo) {
+        $this->pdo = $pdo;
+    }
+
+    public function getByVideo(int $video_id): array {
+        $stmt = $this->pdo->prepare("
+        SELECT comments. *, users.username
+        FROM comments
+        JOIN users ON comments.user_id = users.id
+        WHERE comments.video_id = ?
+        ORDER BY comments.created_at ASC
+        ");
+        $stmt->execute([$video_id]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+}
