@@ -25,4 +25,13 @@ class Comment {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function post(int $user_id, int $video_id, string $content): bool {
+        $stmt = $this->pdo->prepare("
+        INSERT INTO comments (user_id, video_id, content)
+        VALUES (?, ?, ?)
+        ");
+        return $stmt->execute([$user_id, $video_id, $content]);
+    }
+    
+
 }
