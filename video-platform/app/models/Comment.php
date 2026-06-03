@@ -32,6 +32,9 @@ class Comment {
         ");
         return $stmt->execute([$user_id, $video_id, $content]);
     }
-    
 
+    public function delete(int $id): bool {
+        $stmt = $this->pdo->prepare("DELETE FROM comments WHERE id = ?");
+        return $stmt->execute([$id]);
+    }
 }
