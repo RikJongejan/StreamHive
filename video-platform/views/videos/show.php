@@ -25,8 +25,31 @@
     </video>
 
     <p><?= $video['views'] ?> views</p>
-
     <p><?= htmlspecialchars($video['description']) ?></p>
+
+    <hr>
+
+    <h2>Reacties</h2>
+
+    <?php foreach ($comments as $comment): ?>
+        <p>
+            <strong><?= htmlspecialchars($comment['username']) ?></strong>
+            &mdash;
+            <?= htmlspecialchars($comment['content']) ?>
+            <small><?= $comment['created_at'] ?></small>
+        </p>
+        <?php endforeach; ?>
+
+        <?php if (empty($comments)): ?>
+            <p>Nog geen reacties.</p>
+        <?php endif; ?>
+
+        <h3>Reactie plaatsen</h3>
+        <form method="POST" action="/GitHub/StreamHive/video-platform/app/controllers/CommentController.php?action=post">
+            <input type="hidden" name="video_id" value="<?= $video['id'] ?>">
+            <textarea name="content" rows="3" placeholder="Schrijf een reactie..." required></textarea><br>
+            <button type="submit">Plaatsen</button>
+        </form>
 
 </body>
 </html>
