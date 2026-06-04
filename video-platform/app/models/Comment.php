@@ -12,7 +12,7 @@ class Comment {
     public function __construct(PDO $pdo) {
         $this->pdo = $pdo;
     }
-
+    // alle comments van een video ophalen
     public function getByVideo(int $video_id): array {
         $stmt = $this->pdo->prepare("
         SELECT comments. *, users.username
@@ -24,7 +24,7 @@ class Comment {
         $stmt->execute([$video_id]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-
+    //nieuwe comment opslaan
     public function post(int $user_id, int $video_id, string $content): bool {
         $stmt = $this->pdo->prepare("
         INSERT INTO comments (user_id, video_id, content)
@@ -33,6 +33,7 @@ class Comment {
         return $stmt->execute([$user_id, $video_id, $content]);
     }
 
+    // delete comment
     public function delete(int $id): bool {
         $stmt = $this->pdo->prepare("DELETE FROM comments WHERE id = ?");
         return $stmt->execute([$id]);
