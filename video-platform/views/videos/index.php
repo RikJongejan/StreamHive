@@ -14,8 +14,13 @@
 
     <h1>Videos</h1>
     <a href="/GitHub/StreamHive/video-platform/app/controllers/VideoController.php?action=upload">
-        + Video uploaden
+        Video uploaden
     </a>
+    <br>
+    <a href="/GitHub/StreamHive/video-platform/app/controllers/AuthController.php?action=logout">
+    Uitloggen
+    </a>
+
 
     <div style="display: flex; flex-wrap: wrap; gap: 16px; margin-top: 24px;">
 
