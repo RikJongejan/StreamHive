@@ -37,7 +37,11 @@ if ($action === 'show') {
         exit;
     }
     
-    $videoModel->incrementViews($id);
+    //alleen ophogen als de video nog niet bekeken is
+    if (!isset($_SESSION['viewed_videos'][$id])) {
+        $videoModel->incrementViews($id);
+        $_SESSION['viewed_videos'][$id] = true;
+    }
 
     $commentModel = new Comment($pdo);
     $comments = $commentModel->getByVideo($id);
