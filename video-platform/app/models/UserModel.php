@@ -1,64 +1,79 @@
 <?php
-// User.php - Model voor de gebruiker
+// UserModel.php - Model voor de gebruiker
 // Bevat alle logica rondom gebruikers:
 // - Registreren, inloggen, uitloggen
 // - Profiel ophalen en updaten
 // - Account verwijderen
 // Werkt direct met de 'users' tabel in de database
-class User {
+
+class UserModel
+{
     private PDO $pdo;
 
-    //$pdo wordt gegeven vanuit de controller
-    public function __construct(PDO $pdo) {
+    public function __construct(PDO $pdo)
+    {
         $this->pdo = $pdo;
     }
-    //alle gebruikers ophalen uit de database
-    public function getAll(): array {
+
+    public function getAll(): array
+    {
         $stmt = $this->pdo->query("SELECT * FROM users");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-    //1 gebruiker ophalen op ID
-    public function getById(int $id): array|false {
+
+    public function getById(int $id): array|false
+    {
         $stmt = $this->pdo->prepare("SELECT * FROM users WHERE id = ?");
         $stmt->execute([$id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
-    //gebruiker ophalen op email voor het inloggn
-    public function getByEmail(string $email): array|false {
+
+    public function getByEmail(string $email): array|false
+    {
         $stmt = $this->pdo->prepare("SELECT * FROM users WHERE email = ?");
         $stmt->execute([$email]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
-    public function getByUsername(string $username): array|false {
+
+    public function getByUsername(string $username): array|false
+    {
         $stmt = $this->pdo->prepare("SELECT * FROM users WHERE username = ?");
         $stmt->execute([$username]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
-    //nieuwe gebruiker aanmaken
-    public function register(string $email, string $username, string $password): bool {
+
+    // Checks email and username before inserting to prevent duplicates
+    public function register(string $email, string $username, string $password): bool
+    {
         if ($this->getByEmail($email)) return false;
         if ($this->getByUsername($username)) return false;
+
         $hashed = password_hash($password, PASSWORD_DEFAULT);
         $stmt = $this->pdo->prepare("INSERT INTO users (email, username, password) VALUES (?, ?, ?)");
         return $stmt->execute([$email, $username, $hashed]);
     }
-    //controleren inloggen
-    public function login(string $email, string $password): array|false {
+
+    public function login(string $email, string $password): array|false
+    {
         $user = $this->getByEmail($email);
-        if ($user && password_verify($password, $user['password'])) {
+
+        if ($user && password_verify($password, $user['password']))
+        {
             return $user;
         }
+
         return false;
     }
-    //profiel updaten
-    public function updateProfile(int $id, string $username, string $bio, string $profile_image): bool {
+
+    public function updateProfile(int $id, string $username, string $bio, string $profileImage): bool
+    {
         $stmt = $this->pdo->prepare("UPDATE users SET username = ?, bio = ?, profile_image = ? WHERE id = ?");
-        return $stmt->execute([$username, $bio, $profile_image, $id]);
+        return $stmt->execute([$username, $bio, $profileImage, $id]);
     }
-    //account verwijderen
-    public function deleteAccount(int $id): bool {
+
+    public function deleteAccount(int $id): bool
+    {
         $stmt = $this->pdo->prepare("DELETE FROM users WHERE id = ?");
         return $stmt->execute([$id]);
     }
 }
-?>
