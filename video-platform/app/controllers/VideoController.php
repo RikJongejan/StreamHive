@@ -10,11 +10,13 @@ class VideoController
 {
     private VideoService $videoService;
     private CommentService $commentService;
+    private LikeService $likeService;
 
     public function __construct(PDO $pdo)
     {
         $this->videoService   = new VideoService($pdo);
         $this->commentService = new CommentService($pdo);
+        $this->likeService    = new LikeService($pdo);
     }
 
     public function index(): void
@@ -44,7 +46,9 @@ class VideoController
             $_SESSION['viewed_videos'][$id] = true;
         }
 
-        $comments = $this->commentService->getCommentsForVideo($id);
+        $comments   = $this->commentService->getCommentsForVideo($id);
+        $likeCount  = $this->likeService->getLikeCount($id);
+        $userLiked  = $this->likeService->hasLiked((int) $_SESSION['user_id'], $id);
         require VIEWS_PATH . '/videos/show.php';
     }
 

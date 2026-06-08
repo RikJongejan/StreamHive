@@ -9,6 +9,28 @@
 <head>
     <meta charset="UTF-8">
     <title><?= htmlspecialchars($video['title']) ?> - StreamHive</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        .like-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border: 2px solid #ccc;
+            border-radius: 20px;
+            background: white;
+            cursor: pointer;
+            font-size: 15px;
+            color: #555;
+        }
+        .like-btn.liked {
+            border-color: #1877f2;
+            color: #1877f2;
+        }
+        .like-btn i {
+            font-size: 17px;
+        }
+    </style>
 </head>
 <body>
 
@@ -26,6 +48,14 @@
 
     <p><?= $video['views'] ?> views</p>
     <p><?= htmlspecialchars($video['description']) ?></p>
+
+    <form method="POST" action="<?= route('like/toggle') ?>">
+        <input type="hidden" name="video_id" value="<?= $video['id'] ?>">
+        <button type="submit" class="like-btn <?= $userLiked ? 'liked' : '' ?>">
+            <i class="<?= $userLiked ? 'fa-solid' : 'fa-regular' ?> fa-thumbs-up"></i>
+            <?= $likeCount ?> <?= $likeCount === 1 ? 'like' : 'likes' ?>
+        </button>
+    </form>
 
     <hr>
 
