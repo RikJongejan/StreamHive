@@ -25,6 +25,11 @@ class VideoService
         return $this->videoModel->getById($id);
     }
 
+    public function search(string $query): array
+    {
+        return $this->videoModel->search($query);
+    }
+
     public function incrementView(int $id): bool
     {
         return $this->videoModel->incrementViews($id);

@@ -13,14 +13,15 @@
 <body>
 
     <h1>Videos</h1>
-    <a href="<?= route('video/upload') ?>">
-        Video uploaden
-    </a>
-    <br>
-    <a href="<?= route('auth/logout') ?>">
-    Uitloggen
-    </a>
+    <a href="<?= route('video/upload') ?>">Video uploaden</a>
+    &nbsp;|&nbsp;
+    <a href="<?= route('auth/logout') ?>">Uitloggen</a>
 
+    <form method="GET" action="<?= BASE_URL ?>" style="margin-top: 16px;">
+        <input type="hidden" name="route" value="video/search">
+        <input type="text" name="query" placeholder="Zoek op titel of beschrijving..." style="width: 300px; padding: 6px;">
+        <button type="submit">Zoeken</button>
+    </form>
 
     <div style="display: flex; flex-wrap: wrap; gap: 16px; margin-top: 24px;">
 

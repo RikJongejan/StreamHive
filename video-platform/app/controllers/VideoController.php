@@ -52,6 +52,15 @@ class VideoController
         require VIEWS_PATH . '/videos/show.php';
     }
 
+    public function search(): void
+    {
+        requireLogin();
+
+        $query  = sanitize($_GET['query'] ?? '');
+        $videos = $query !== '' ? $this->videoService->search($query) : [];
+        require VIEWS_PATH . '/videos/search.php';
+    }
+
     public function upload(): void
     {
         requireLogin();

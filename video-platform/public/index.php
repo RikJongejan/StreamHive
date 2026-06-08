@@ -43,6 +43,7 @@ $router->add('auth/logout',   'AuthController',    'logout');
 $router->add('video/index',   'VideoController',   'index');
 $router->add('video/show',    'VideoController',   'show');
 $router->add('video/upload',  'VideoController',   'upload');
+$router->add('video/search',  'VideoController',   'search');
 $router->add('comment/post',  'CommentController', 'post');
 $router->add('like/toggle',   'LikeController',   'toggle');
 

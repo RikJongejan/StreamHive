@@ -55,6 +55,19 @@ class VideoModel
         return $stmt->execute([$id]);
     }
 
+    // Zoekt op titel en beschrijving met LIKE zodat beide velden doorzocht worden
+    public function search(string $query): array
+    {
+        $term = '%' . $query . '%';
+        $stmt = $this->pdo->prepare("
+            SELECT * FROM videos
+            WHERE title LIKE ? OR description LIKE ?
+            ORDER BY created_at DESC
+        ");
+        $stmt->execute([$term, $term]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     // JOIN via de koppeltabel video_category omdat categorieen een N:N relatie met videos hebben
     public function getCategories(int $videoId): array
     {
