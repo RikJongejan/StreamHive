@@ -18,7 +18,7 @@
             <div class="error"><?= htmlspecialchars($error) ?></div>
         <?php endif; ?>
 
-            <form method="POST" action="/GitHub/StreamHive/video-platform/app/controllers/AuthController.php?action=login">
+            <form method="POST" action="<?= route('auth/login') ?>">
             <label>E-mailadres</label>
             <input type="email" name="email" placeholder="Your@email.com" required>
  

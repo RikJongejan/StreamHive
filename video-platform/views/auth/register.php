@@ -17,7 +17,7 @@
         <div class="error"><?= htmlspecialchars($error) ?></div>
         <?php endif; ?>
 
-         <form method="POST" action="/github/streamhive/video-platform/app/controllers/AuthController.php?action=register">
+         <form method="POST" action="<?= route('auth/register') ?>">
             <label>E-mailadres</label>
             <input type="email" name="email" placeholder="jouw@email.com" required>
  
@@ -34,7 +34,7 @@
         </form>
 
         <div class="link">
-            Al een account? <a href="/GitHub/StreamHive/video-platform/app/controllers/AuthController.php?action=login">Inloggen</a>
+            Al een account? <a href="<?= route('auth/login') ?>">Inloggen</a>
         </div>
 
     </div>

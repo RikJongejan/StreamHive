@@ -1,122 +1,75 @@
 <?php
-// VideoController.php - Regelt alles rondom videos
+// VideoController.php - Regelt alles rondom video's
 // Verantwoordelijk voor:
-// - Lijst van alle videos ophalen voor de homepagina
-// - Een specifieke video ophalen op ID
-// - Video uploaden (bestand opslaan + database)
-// - Video verwijderen
-// Gebruikt: VideoModel, CategoryModel
+// - Lijst van alle video's tonen (homepagina)
+// - Een specifieke video tonen met reacties
+// - Video uploaden
+// De controller verwerkt de request en roept VideoService en CommentService aan.
 
-session_start();
-require_once __DIR__ . '/../config/database.php';
-require_once __DIR__ . '/../models/VideoModel.php';
-require_once __DIR__ . '/../models/CommentModel.php';
-require_once __DIR__ . '/../../includes/auth.php';
-require_once __DIR__ . '/../../includes/helpers.php';
-
-requireLogin();
-
-$videoModel = new VideoModel($pdo);
-$error = '';
-
-$action = $_GET['action'] ?? 'index';
-
-if ($action === 'index')
+class VideoController
 {
-    $videos = $videoModel->getAll();
-    require_once __DIR__ . '/../../views/videos/index.php';
-}
+    private VideoService $videoService;
+    private CommentService $commentService;
 
-if ($action === 'show')
-{
-    $id = (int) $_GET['id'];
-    $video = $videoModel->getById($id);
-
-    if (!$video)
+    public function __construct(PDO $pdo)
     {
-        echo 'Video not found.';
-        exit;
+        $this->videoService   = new VideoService($pdo);
+        $this->commentService = new CommentService($pdo);
     }
 
-    // zorgt ervoor dat dezelfde user geen extra view per refresh kan geven.
-    if (!isset($_SESSION['viewed_videos'][$id]))
+    public function index(): void
     {
-        $videoModel->incrementViews($id);
-        $_SESSION['viewed_videos'][$id] = true;
+        requireLogin();
+
+        $videos = $this->videoService->getAllVideos();
+        require VIEWS_PATH . '/videos/index.php';
     }
 
-    $commentModel = new CommentModel($pdo);
-    $comments = $commentModel->getByVideo($id);
-
-    require_once __DIR__ . '/../../views/videos/show.php';
-}
-
-if ($action === 'upload')
-{
-    if ($_SERVER['REQUEST_METHOD'] === 'POST')
+    public function show(): void
     {
-        $title       = sanitiza($_POST['title'] ?? '');
-        $description = sanitiza($_POST['description'] ?? '');
-        $userId      = $_SESSION['user_id'];
+        requireLogin();
 
-        $videoFile     = $_FILES['video'];
-        $thumbnailFile = $_FILES['thumbnail'];
+        $id    = (int) ($_GET['id'] ?? 0);
+        $video = $this->videoService->getVideo($id);
 
-        if (empty($title))
-        {
-            $error = 'Title is required.';
+        if (!$video) {
+            http_response_code(404);
+            echo 'Video not found.';
+            return;
         }
-        elseif ($videoFile['error'] !== UPLOAD_ERR_OK)
-        {
-            $error = 'Video file is required.';
-        }
-        elseif ($videoFile['size'] > 100 * 1024 * 1024)
-        {
-            $error = 'Video is too large (max 100MB).';
-        }
-        elseif (!in_array(mime_content_type($videoFile['tmp_name']), ['video/mp4', 'video/webm', 'video/ogg']))
-        {
-            $error = 'Only MP4, WebM or OGG is allowed.';
-        }
-        else
-        {
-            $videoExt  = pathinfo($videoFile['name'], PATHINFO_EXTENSION);
-            $videoName = uniqid('video_', true) . '.' . $videoExt;
-            $videoPath = __DIR__ . '/../../uploads/videos/' . $videoName;
-            move_uploaded_file($videoFile['tmp_name'], $videoPath);
 
-            $thumbnailName = '';
+        // Voorkomt dat dezelfde gebruiker bij elke refresh een extra view geeft
+        if (!isset($_SESSION['viewed_videos'][$id])) {
+            $this->videoService->incrementView($id);
+            $_SESSION['viewed_videos'][$id] = true;
+        }
 
-            if ($thumbnailFile['error'] === UPLOAD_ERR_OK)
-            {
-                if (!in_array(mime_content_type($thumbnailFile['tmp_name']), ['image/jpeg', 'image/png', 'image/webp']))
-                {
-                    $error = 'Thumbnail must be JPG, PNG or WebP.';
-                }
-                else
-                {
-                    $imgExt        = pathinfo($thumbnailFile['name'], PATHINFO_EXTENSION);
-                    $thumbnailName = uniqid('thumb_', true) . '.' . $imgExt;
-                    $thumbPath     = __DIR__ . '/../../uploads/thumbnails/' . $thumbnailName;
-                    move_uploaded_file($thumbnailFile['tmp_name'], $thumbPath);
-                }
+        $comments = $this->commentService->getCommentsForVideo($id);
+        require VIEWS_PATH . '/videos/show.php';
+    }
+
+    public function upload(): void
+    {
+        requireLogin();
+
+        $error = '';
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $result = $this->videoService->upload(
+                (int) $_SESSION['user_id'],
+                sanitize($_POST['title'] ?? ''),
+                sanitize($_POST['description'] ?? ''),
+                $_FILES['video'] ?? null,
+                $_FILES['thumbnail'] ?? null
+            );
+
+            if ($result['success']) {
+                redirect(route('video/index'));
             }
 
-            if (empty($error))
-            {
-                $success = $videoModel->upload($userId, $title, $description, $videoName, $thumbnailName);
-
-                if ($success)
-                {
-                    redirect('/GitHub/StreamHive/video-platform/app/controllers/VideoController.php?action=index');
-                }
-                else
-                {
-                    $error = 'Saving to database failed.';
-                }
-            }
+            $error = $result['error'];
         }
-    }
 
-    require_once __DIR__ . '/../../views/videos/upload.php';
+        require VIEWS_PATH . '/videos/upload.php';
+    }
 }

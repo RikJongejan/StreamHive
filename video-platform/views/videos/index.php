@@ -13,11 +13,11 @@
 <body>
 
     <h1>Videos</h1>
-    <a href="/GitHub/StreamHive/video-platform/app/controllers/VideoController.php?action=upload">
+    <a href="<?= route('video/upload') ?>">
         Video uploaden
     </a>
     <br>
-    <a href="/GitHub/StreamHive/video-platform/app/controllers/AuthController.php?action=logout">
+    <a href="<?= route('auth/logout') ?>">
     Uitloggen
     </a>
 
@@ -25,11 +25,11 @@
     <div style="display: flex; flex-wrap: wrap; gap: 16px; margin-top: 24px;">
 
         <?php foreach ($videos as $video): ?>
-            <a href="/GitHub/StreamHive/video-platform/app/controllers/VideoController.php?action=show&id=<?= $video['id'] ?>"
+            <a href="<?= route('video/show', ['id' => $video['id']]) ?>"
                style="text-decoration: none; color: inherit; width: 200px;">
 
                 <?php if (!empty($video['thumbnail'])): ?>
-                    <img src="/GitHub/StreamHive/video-platform/uploads/thumbnails/<?= htmlspecialchars($video['thumbnail']) ?>"
+                    <img src="<?= UPLOADS_URL ?>/thumbnails/<?= htmlspecialchars($video['thumbnail']) ?>"
                          style="width: 200px; height: 120px; object-fit: cover;">
                 <?php else: ?>
                     <div style="width: 200px; height: 120px; background: #333; display: flex; align-items: center; justify-content: center; color: white;">

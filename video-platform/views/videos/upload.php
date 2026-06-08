@@ -17,7 +17,7 @@
         <p style="color:red;"><?= htmlspecialchars($error) ?></p>
     <?php endif; ?>
     
-    <form method="POST" action="/GitHub/StreamHive/video-platform/app/controllers/VideoController.php?action=upload" enctype="multipart/form-data">
+    <form method="POST" action="<?= route('video/upload') ?>" enctype="multipart/form-data">
 
         <label>Titel</label><br>
         <input type="text" name="title" required><br><br>

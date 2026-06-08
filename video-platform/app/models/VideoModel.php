@@ -55,9 +55,15 @@ class VideoModel
         return $stmt->execute([$id]);
     }
 
+    // JOIN via de koppeltabel video_category omdat categorieen een N:N relatie met videos hebben
     public function getCategories(int $videoId): array
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM categories WHERE video_id = ?");
+        $stmt = $this->pdo->prepare("
+            SELECT categories.*
+            FROM categories
+            JOIN video_category ON categories.id = video_category.category_id
+            WHERE video_category.video_id = ?
+        ");
         $stmt->execute([$videoId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
