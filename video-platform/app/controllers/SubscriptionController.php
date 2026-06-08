@@ -1,7 +1,29 @@
 <?php
 // SubscriptionController.php - Regelt abonnementen
 // Verantwoordelijk voor:
-// - Abonneren op een andere gebruiker
-// - Abonnement opzeggen
-// - Lijst van gevolgde gebruikers ophalen
-// Gebruikt: Subscription model
+// - Abonneren of opzeggen als gebruiker op de knop klikt (toggle)
+// De controller verwerkt de request en roept SubscriptionService aan voor de logica.
+
+class SubscriptionController
+{
+    private SubscriptionService $subscriptionService;
+
+    public function __construct(PDO $pdo)
+    {
+        $this->subscriptionService = new SubscriptionService($pdo);
+    }
+
+    public function toggle(): void
+    {
+        requireLogin();
+
+        $leaderId = (int) ($_POST['leader_id'] ?? 0);
+        $videoId  = (int) ($_POST['video_id'] ?? 0);
+
+        if ($leaderId > 0) {
+            $this->subscriptionService->toggle((int) $_SESSION['user_id'], $leaderId);
+        }
+
+        redirect(route('video/show', ['id' => $videoId]));
+    }
+}

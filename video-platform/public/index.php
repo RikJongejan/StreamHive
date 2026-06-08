@@ -45,7 +45,8 @@ $router->add('video/show',    'VideoController',   'show');
 $router->add('video/upload',  'VideoController',   'upload');
 $router->add('video/search',  'VideoController',   'search');
 $router->add('comment/post',  'CommentController', 'post');
-$router->add('like/toggle',   'LikeController',   'toggle');
+$router->add('like/toggle',          'LikeController',         'toggle');
+$router->add('subscription/toggle',  'SubscriptionController', 'toggle');
 
 // Geen route opgegeven? Stuur naar het overzicht als je ingelogd bent, anders naar login.
 $route = $_GET['route'] ?? '';

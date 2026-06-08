@@ -30,6 +30,22 @@
         .like-btn i {
             font-size: 17px;
         }
+        .sub-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 20px;
+            background: #222;
+            color: white;
+            cursor: pointer;
+            font-size: 15px;
+        }
+        .sub-btn.subscribed {
+            background: #e0e0e0;
+            color: #222;
+        }
     </style>
 </head>
 <body>
@@ -49,13 +65,28 @@
     <p><?= $video['views'] ?> views</p>
     <p><?= htmlspecialchars($video['description']) ?></p>
 
-    <form method="POST" action="<?= route('like/toggle') ?>">
-        <input type="hidden" name="video_id" value="<?= $video['id'] ?>">
-        <button type="submit" class="like-btn <?= $userLiked ? 'liked' : '' ?>">
-            <i class="<?= $userLiked ? 'fa-solid' : 'fa-regular' ?> fa-thumbs-up"></i>
-            <?= $likeCount ?> <?= $likeCount === 1 ? 'like' : 'likes' ?>
-        </button>
-    </form>
+    <div style="display: flex; align-items: center; gap: 12px; margin: 12px 0;">
+
+        <form method="POST" action="<?= route('like/toggle') ?>">
+            <input type="hidden" name="video_id" value="<?= $video['id'] ?>">
+            <button type="submit" class="like-btn <?= $userLiked ? 'liked' : '' ?>">
+                <i class="<?= $userLiked ? 'fa-solid' : 'fa-regular' ?> fa-thumbs-up"></i>
+                <?= $likeCount ?> <?= $likeCount === 1 ? 'like' : 'likes' ?>
+            </button>
+        </form>
+
+        <?php if ((int) $video['user_id'] !== (int) $_SESSION['user_id']): ?>
+            <form method="POST" action="<?= route('subscription/toggle') ?>">
+                <input type="hidden" name="leader_id" value="<?= $video['user_id'] ?>">
+                <input type="hidden" name="video_id" value="<?= $video['id'] ?>">
+                <button type="submit" class="sub-btn <?= $userSubscribed ? 'subscribed' : '' ?>">
+                    <?= $userSubscribed ? 'Geabonneerd' : 'Abonneren' ?>
+                    <span style="font-size:12px;">(<?= $subscriberCount ?>)</span>
+                </button>
+            </form>
+        <?php endif; ?>
+
+    </div>
 
     <hr>
 
