@@ -44,9 +44,13 @@ $router->add('video/index',   'VideoController',   'index');
 $router->add('video/show',    'VideoController',   'show');
 $router->add('video/upload',  'VideoController',   'upload');
 $router->add('video/search',  'VideoController',   'search');
+$router->add('video/delete',  'VideoController',   'delete');
 $router->add('comment/post',  'CommentController', 'post');
 $router->add('like/toggle',          'LikeController',         'toggle');
 $router->add('subscription/toggle',  'SubscriptionController', 'toggle');
+$router->add('user/profile',  'UserController',    'profile');
+$router->add('user/settings', 'UserController',    'settings');
+$router->add('user/update',   'UserController',    'update');
 
 // Geen route opgegeven? Stuur naar het overzicht als je ingelogd bent, anders naar login.
 $route = $_GET['route'] ?? '';

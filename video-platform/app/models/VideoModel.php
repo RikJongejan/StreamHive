@@ -16,22 +16,39 @@ class VideoModel
         $this->pdo = $pdo;
     }
 
+    // JOIN met users zodat de view direct de naam van de uploader heeft (kolom 'uploader')
     public function getAll(): array
     {
-        $stmt = $this->pdo->query("SELECT * FROM videos ORDER BY created_at DESC");
+        $stmt = $this->pdo->query("
+            SELECT videos.*, users.username AS uploader
+            FROM videos
+            JOIN users ON videos.user_id = users.id
+            ORDER BY videos.created_at DESC
+        ");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function getById(int $id): array|false
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM videos WHERE id = ?");
+        $stmt = $this->pdo->prepare("
+            SELECT videos.*, users.username AS uploader
+            FROM videos
+            JOIN users ON videos.user_id = users.id
+            WHERE videos.id = ?
+        ");
         $stmt->execute([$id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
     public function getByUser(int $userId): array
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM videos WHERE user_id = ?");
+        $stmt = $this->pdo->prepare("
+            SELECT videos.*, users.username AS uploader
+            FROM videos
+            JOIN users ON videos.user_id = users.id
+            WHERE videos.user_id = ?
+            ORDER BY videos.created_at DESC
+        ");
         $stmt->execute([$userId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -64,11 +81,28 @@ class VideoModel
     {
         $term = '%' . $query . '%';
         $stmt = $this->pdo->prepare("
-            SELECT * FROM videos
-            WHERE title LIKE ? OR description LIKE ?
-            ORDER BY created_at DESC
+            SELECT videos.*, users.username AS uploader
+            FROM videos
+            JOIN users ON videos.user_id = users.id
+            WHERE videos.title LIKE ? OR videos.description LIKE ?
+            ORDER BY videos.created_at DESC
         ");
         $stmt->execute([$term, $term]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    // Alle video's binnen één categorie (voor het filteren op de homepagina)
+    public function getByCategory(int $categoryId): array
+    {
+        $stmt = $this->pdo->prepare("
+            SELECT videos.*, users.username AS uploader
+            FROM videos
+            JOIN users ON videos.user_id = users.id
+            JOIN video_category ON videos.id = video_category.video_id
+            WHERE video_category.category_id = ?
+            ORDER BY videos.created_at DESC
+        ");
+        $stmt->execute([$categoryId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 

@@ -25,9 +25,56 @@ class VideoService
         return $this->videoModel->getById($id);
     }
 
+    public function getVideosByUser(int $userId): array
+    {
+        return $this->videoModel->getByUser($userId);
+    }
+
+    // Verwijdert een video, maar alleen als hij van de ingelogde gebruiker is.
+    // Ruimt ook de bestanden op schijf op. Gekoppelde rijen (likes, reacties,
+    // categorie-koppelingen) verdwijnen vanzelf door ON DELETE CASCADE.
+    public function delete(int $videoId, int $userId): bool
+    {
+        $video = $this->videoModel->getById($videoId);
+
+        if (!$video || (int) $video['user_id'] !== $userId) {
+            return false;
+        }
+
+        $this->deleteFileIfExists(UPLOADS_PATH . '/videos/' . $video['filename']);
+        if (!empty($video['thumbnail'])) {
+            $this->deleteFileIfExists(UPLOADS_PATH . '/thumbnails/' . $video['thumbnail']);
+        }
+
+        return $this->videoModel->delete($videoId);
+    }
+
+    private function deleteFileIfExists(string $path): void
+    {
+        if (is_file($path)) {
+            unlink($path);
+        }
+    }
+
     public function getCategoriesForVideo(int $videoId): array
     {
         return $this->videoModel->getCategories($videoId);
+    }
+
+    public function getVideosByCategory(int $categoryId): array
+    {
+        return $this->videoModel->getByCategory($categoryId);
+    }
+
+    // Andere video's om naast de huidige aan te bevelen (max $limit stuks)
+    public function getRecommended(int $excludeId, int $limit = 12): array
+    {
+        $others = array_values(array_filter(
+            $this->videoModel->getAll(),
+            fn($v) => (int) $v['id'] !== $excludeId
+        ));
+
+        return array_slice($others, 0, $limit);
     }
 
     public function search(string $query): array

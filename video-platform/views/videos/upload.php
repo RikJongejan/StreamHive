@@ -1,55 +1,90 @@
 <?php
 // upload.php - Pagina voor het uploaden van een video
-// Formulier met: titel, beschrijving, videobestand, thumbnail, categorieen
-// Bestaande categorieen als checkboxes, nieuwe categorieen als komma-gescheiden tekstveld
-// Bij submit verwerkt VideoController het bestand en koppelt CategoryService de categorieen
+// Formulier met: titel, beschrijving, videobestand, thumbnail en categorieen.
+// Bestaande categorieen als chips (checkboxes), nieuwe als komma-gescheiden tekst.
+// Bij submit verwerkt VideoController het bestand en koppelt CategoryService de categorieen.
+$pageTitle = 'Uploaden';
+require VIEWS_PATH . '/partials/header.php';
 ?>
-<!DOCTYPE html>
-<html lang="nl">
-<head>
-    <meta charset="UTF-8">
-    <title>Video uploaden - StreamHive</title>
-</head>
-<body>
-    <a href="<?= route('video/index') ?>">&larr; Terug</a>
 
-    <h1>Video uploaden</h1>
+<main class="page">
+    <div class="container">
 
-    <?php if (!empty($error)): ?>
-        <p style="color:red;"><?= htmlspecialchars($error) ?></p>
-    <?php endif; ?>
+        <a class="back-link" href="<?= route('video/index') ?>">
+            <i class="fa-solid fa-arrow-left"></i> Terug naar home
+        </a>
 
-    <form method="POST" action="<?= route('video/upload') ?>" enctype="multipart/form-data">
+        <div class="form-card">
+            <h1><i class="fa-solid fa-cloud-arrow-up"></i> Video uploaden</h1>
+            <p class="muted">Deel je video met de zwerm. Max 500 MB &mdash; MP4, WebM of OGG.</p>
 
-        <label>Titel</label><br>
-        <input type="text" name="title" required><br><br>
+            <?php if (!empty($error)): ?>
+                <div class="alert alert-error">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    <?= htmlspecialchars($error) ?>
+                </div>
+            <?php endif; ?>
 
-        <label>Beschrijving</label><br>
-        <textarea name="description" rows="4"></textarea><br><br>
+            <form method="POST" action="<?= route('video/upload') ?>" enctype="multipart/form-data">
 
-        <label>Videobestand</label><br>
-        <input type="file" name="video" accept="video/*" required><br><br>
+                <div class="form-group">
+                    <label>Titel</label>
+                    <input class="input" type="text" name="title" placeholder="Geef je video een pakkende titel" required>
+                </div>
 
-        <label>Thumbnail</label><br>
-        <input type="file" name="thumbnail" accept="image/*"><br><br>
+                <div class="form-group">
+                    <label>Beschrijving</label>
+                    <textarea class="input" name="description" rows="4" placeholder="Waar gaat je video over?"></textarea>
+                </div>
 
-        <label>Categorie&euml;n</label><br>
+                <div class="form-group">
+                    <label>Videobestand</label>
+                    <div class="filefield">
+                        <input type="file" name="video" accept="video/*" required>
+                        <div class="filebox">
+                            <i class="fa-solid fa-film"></i>
+                            <span class="file-name" data-placeholder="Kies een videobestand">Kies een videobestand (MP4, WebM, OGG)</span>
+                        </div>
+                    </div>
+                </div>
 
-        <?php if (!empty($categories)): ?>
-            <?php foreach ($categories as $category): ?>
-                <label style="margin-right: 12px;">
-                    <input type="checkbox" name="categories[]" value="<?= $category['id'] ?>">
-                    <?= htmlspecialchars($category['name']) ?>
-                </label>
-            <?php endforeach; ?>
-            <br><br>
-        <?php endif; ?>
+                <div class="form-group">
+                    <label>Thumbnail <small>(optioneel)</small></label>
+                    <div class="filefield">
+                        <input type="file" name="thumbnail" accept="image/*">
+                        <div class="filebox">
+                            <i class="fa-solid fa-image"></i>
+                            <span class="file-name" data-placeholder="Kies een afbeelding">Kies een afbeelding (JPG, PNG, WebP)</span>
+                        </div>
+                    </div>
+                </div>
 
-        <label>Nieuwe categorie&euml;n toevoegen <small>(komma-gescheiden)</small></label><br>
-        <input type="text" name="new_categories" placeholder="bijv. Gaming, Muziek, Vlog"><br><br>
+                <?php if (!empty($categories)): ?>
+                    <div class="form-group">
+                        <label>Categorie&euml;n</label>
+                        <div class="chip-grid">
+                            <?php foreach ($categories as $category): ?>
+                                <div class="chip-check">
+                                    <input type="checkbox" id="cat-<?= $category['id'] ?>" name="categories[]" value="<?= $category['id'] ?>">
+                                    <label for="cat-<?= $category['id'] ?>"><?= htmlspecialchars($category['name']) ?></label>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                <?php endif; ?>
 
-        <button type="submit">Uploaden</button>
-    </form>
+                <div class="form-group">
+                    <label>Nieuwe categorie&euml;n toevoegen <small>(komma-gescheiden)</small></label>
+                    <input class="input" type="text" name="new_categories" placeholder="bijv. Gaming, Muziek, Vlog">
+                </div>
 
-</body>
-</html>
+                <button class="btn btn-honey btn-lg" type="submit">
+                    <i class="fa-solid fa-upload"></i> Uploaden
+                </button>
+            </form>
+        </div>
+
+    </div>
+</main>
+
+<?php require VIEWS_PATH . '/partials/footer.php'; ?>

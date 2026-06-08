@@ -1,135 +1,166 @@
 <?php
-// show.php - Pagina voor het bekijken van een video
-// Toont: de video zelf, titel, beschrijving, uploader
-// Ook: aantal likes, like-knop, reacties, abonneerknop
-// Data komt binnen via VideoController als $video array
+// show.php - Pagina voor het bekijken van één video (YouTube-stijl)
+// Links: de speler, daaronder titel, uploader, knoppen, beschrijving en reacties.
+// Rechts: een lijst met aanbevolen video's.
+// Alle data komt binnen via VideoController.
+$pageTitle = $video['title'];
+
+$currentId       = (int) $_SESSION['user_id'];
+$isOwnVideo      = (int) $video['user_id'] === $currentId;
+$uploaderName    = $video['uploader'] ?? '';
+$uploaderInitial = $uploaderName !== '' ? strtoupper(substr($uploaderName, 0, 1)) : '?';
+$myInitial       = strtoupper(substr($_SESSION['username'] ?? '?', 0, 1));
+
+require VIEWS_PATH . '/partials/header.php';
 ?>
-<!DOCTYPE html>
-<html lang="nl">
-<head>
-    <meta charset="UTF-8">
-    <title><?= htmlspecialchars($video['title']) ?> - StreamHive</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <style>
-        .like-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 8px 16px;
-            border: 2px solid #ccc;
-            border-radius: 20px;
-            background: white;
-            cursor: pointer;
-            font-size: 15px;
-            color: #555;
-        }
-        .like-btn.liked {
-            border-color: #1877f2;
-            color: #1877f2;
-        }
-        .like-btn i {
-            font-size: 17px;
-        }
-        .sub-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 8px 16px;
-            border: none;
-            border-radius: 20px;
-            background: #222;
-            color: white;
-            cursor: pointer;
-            font-size: 15px;
-        }
-        .sub-btn.subscribed {
-            background: #e0e0e0;
-            color: #222;
-        }
-        .category-tag {
-            display: inline-block;
-            padding: 3px 10px;
-            background: #f0f0f0;
-            border-radius: 12px;
-            font-size: 13px;
-            color: #444;
-            margin-right: 6px;
-        }
-    </style>
-</head>
-<body>
 
-    <a href="<?= route('video/index') ?>">
-        &larr; Terug
-    </a>
+<main class="page">
+    <div class="container watch-wide">
 
-    <h1><?= htmlspecialchars($video['title']) ?></h1>
+        <a class="back-link" href="<?= route('video/index') ?>">
+            <i class="fa-solid fa-arrow-left"></i> Terug naar home
+        </a>
 
-    <video width="800" controls>
-        <source src="<?= UPLOADS_URL ?>/videos/<?= htmlspecialchars($video['filename']) ?>"
-                type="video/mp4">
-        Je browser ondersteunt geen video.
-    </video>
+        <div class="watch-layout">
 
-    <p><?= $video['views'] ?> views</p>
-    <p><?= htmlspecialchars($video['description']) ?></p>
+            <!-- ============ LINKS: speler + info ============ -->
+            <div class="watch-main">
 
-    <?php if (!empty($videoCategories)): ?>
-        <div style="margin-bottom: 8px;">
-            <?php foreach ($categories as $category): ?>
-                <?php if (in_array($category['id'], $videoCategories)): ?>
-                    <span class="category-tag"><?= htmlspecialchars($category['name']) ?></span>
+                <div class="player-wrap">
+                    <video controls preload="metadata" poster="<?= !empty($video['thumbnail']) ? UPLOADS_URL . '/thumbnails/' . htmlspecialchars($video['thumbnail']) : '' ?>">
+                        <source src="<?= UPLOADS_URL ?>/videos/<?= htmlspecialchars($video['filename']) ?>" type="video/mp4">
+                        Je browser ondersteunt geen video.
+                    </video>
+                </div>
+
+                <h1><?= htmlspecialchars($video['title']) ?></h1>
+
+                <div class="watch-bar">
+                    <div class="uploader-block">
+                        <a href="<?= route('user/profile', ['id' => $video['user_id']]) ?>">
+                            <span class="avatar-mini"><?= htmlspecialchars($uploaderInitial) ?></span>
+                        </a>
+                        <div>
+                            <a class="u-name" href="<?= route('user/profile', ['id' => $video['user_id']]) ?>">
+                                <?= htmlspecialchars($uploaderName) ?>
+                            </a>
+                            <div class="u-subs"><?= formatCount($subscriberCount) ?> abonnees</div>
+                        </div>
+
+                        <?php if (!$isOwnVideo): ?>
+                            <form method="POST" action="<?= route('subscription/toggle') ?>" style="margin-left:8px;">
+                                <input type="hidden" name="leader_id" value="<?= $video['user_id'] ?>">
+                                <input type="hidden" name="video_id" value="<?= $video['id'] ?>">
+                                <button type="submit" class="sub-btn <?= $userSubscribed ? 'subscribed' : '' ?>">
+                                    <i class="fa-solid <?= $userSubscribed ? 'fa-check' : 'fa-bell' ?>"></i>
+                                    <?= $userSubscribed ? 'Geabonneerd' : 'Abonneren' ?>
+                                </button>
+                            </form>
+                        <?php endif; ?>
+                    </div>
+
+                    <div class="watch-actions">
+                        <form class="like-form" method="POST" action="<?= route('like/toggle') ?>">
+                            <input type="hidden" name="video_id" value="<?= $video['id'] ?>">
+                            <button type="submit" class="like-btn <?= $userLiked ? 'liked' : '' ?>">
+                                <i class="<?= $userLiked ? 'fa-solid' : 'fa-regular' ?> fa-thumbs-up"></i>
+                                <?= formatCount($likeCount) ?>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="video-desc">
+                    <div class="desc-meta">
+                        <span><i class="fa-solid fa-eye"></i> <?= formatCount((int) $video['views']) ?> weergaven</span>
+                        <span><i class="fa-solid fa-clock"></i> <?= timeAgo($video['created_at']) ?></span>
+                        <span><i class="fa-solid fa-thumbs-up"></i> <?= formatCount($likeCount) ?> likes</span>
+                    </div>
+
+                    <?php if (!empty($video['description'])): ?>
+                        <p class="desc-body"><?= nl2br(htmlspecialchars($video['description'])) ?></p>
+                    <?php else: ?>
+                        <p class="desc-body"><em>Geen beschrijving.</em></p>
+                    <?php endif; ?>
+
+                    <?php if (!empty($videoCategories)): ?>
+                        <div class="cat-tags">
+                            <?php foreach ($categories as $category): ?>
+                                <?php if (in_array($category['id'], $videoCategories)): ?>
+                                    <span class="cat-tag"><?= htmlspecialchars($category['name']) ?></span>
+                                <?php endif; ?>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
+
+                <section class="comments">
+                    <h2><i class="fa-solid fa-comments"></i> <?= count($comments) ?> reactie<?= count($comments) === 1 ? '' : 's' ?></h2>
+
+                    <form class="comment-form" method="POST" action="<?= route('comment/post') ?>">
+                        <span class="avatar-mini"><?= htmlspecialchars($myInitial) ?></span>
+                        <div class="cf-body">
+                            <input type="hidden" name="video_id" value="<?= $video['id'] ?>">
+                            <textarea class="input" name="content" rows="2" placeholder="Voeg een reactie toe..." required></textarea>
+                            <div class="cf-actions">
+                                <button type="submit" class="btn btn-honey">
+                                    <i class="fa-solid fa-paper-plane"></i> Plaatsen
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <?php if (empty($comments)): ?>
+                        <p style="color: var(--text-mute);">Nog geen reacties. Wees de eerste!</p>
+                    <?php else: ?>
+                        <?php foreach ($comments as $comment): ?>
+                            <?php $cInitial = strtoupper(substr($comment['username'] ?? '?', 0, 1)); ?>
+                            <div class="comment">
+                                <span class="avatar-mini"><?= htmlspecialchars($cInitial) ?></span>
+                                <div>
+                                    <div class="c-head">
+                                        <span class="c-name"><?= htmlspecialchars($comment['username']) ?></span>
+                                        <span class="c-time"><?= timeAgo($comment['created_at']) ?></span>
+                                    </div>
+                                    <div class="c-text"><?= nl2br(htmlspecialchars($comment['content'])) ?></div>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </section>
+
+            </div>
+
+            <!-- ============ RECHTS: aanbevolen ============ -->
+            <aside class="watch-sidebar">
+                <h2><i class="fa-solid fa-layer-group"></i> Aanbevolen</h2>
+
+                <?php if (empty($recommended)): ?>
+                    <p style="color: var(--text-mute);">Nog geen andere video's.</p>
+                <?php else: ?>
+                    <?php foreach ($recommended as $rec): ?>
+                        <a class="rec-card" href="<?= route('video/show', ['id' => $rec['id']]) ?>">
+                            <div class="rec-thumb">
+                                <?php if (!empty($rec['thumbnail'])): ?>
+                                    <img src="<?= UPLOADS_URL ?>/thumbnails/<?= htmlspecialchars($rec['thumbnail']) ?>"
+                                         alt="<?= htmlspecialchars($rec['title']) ?>" loading="lazy">
+                                <?php else: ?>
+                                    <div class="no-thumb"><i class="fa-solid fa-film"></i></div>
+                                <?php endif; ?>
+                                <span class="views-badge"><i class="fa-solid fa-eye"></i> <?= formatCount((int) $rec['views']) ?></span>
+                            </div>
+                            <div class="rec-info">
+                                <h4><?= htmlspecialchars($rec['title']) ?></h4>
+                                <span><?= htmlspecialchars($rec['uploader'] ?? '') ?></span>
+                                <span><?= formatCount((int) $rec['views']) ?> weergaven &middot; <?= timeAgo($rec['created_at']) ?></span>
+                            </div>
+                        </a>
+                    <?php endforeach; ?>
                 <?php endif; ?>
-            <?php endforeach; ?>
+            </aside>
+
         </div>
-    <?php endif; ?>
-
-    <div style="display: flex; align-items: center; gap: 12px; margin: 12px 0;">
-
-        <form method="POST" action="<?= route('like/toggle') ?>">
-            <input type="hidden" name="video_id" value="<?= $video['id'] ?>">
-            <button type="submit" class="like-btn <?= $userLiked ? 'liked' : '' ?>">
-                <i class="<?= $userLiked ? 'fa-solid' : 'fa-regular' ?> fa-thumbs-up"></i>
-                <?= $likeCount ?> <?= $likeCount === 1 ? 'like' : 'likes' ?>
-            </button>
-        </form>
-
-        <?php if ((int) $video['user_id'] !== (int) $_SESSION['user_id']): ?>
-            <form method="POST" action="<?= route('subscription/toggle') ?>">
-                <input type="hidden" name="leader_id" value="<?= $video['user_id'] ?>">
-                <input type="hidden" name="video_id" value="<?= $video['id'] ?>">
-                <button type="submit" class="sub-btn <?= $userSubscribed ? 'subscribed' : '' ?>">
-                    <?= $userSubscribed ? 'Geabonneerd' : 'Abonneren' ?>
-                    <span style="font-size:12px;">(<?= $subscriberCount ?>)</span>
-                </button>
-            </form>
-        <?php endif; ?>
-
     </div>
+</main>
 
-    <hr>
-
-    <h2>Reacties</h2>
-
-    <?php foreach ($comments as $comment): ?>
-        <p>
-            <strong><?= htmlspecialchars($comment['username']) ?></strong>
-            &mdash;
-            <?= htmlspecialchars($comment['content']) ?>
-            <small><?= $comment['created_at'] ?></small>
-        </p>
-        <?php endforeach; ?>
-
-        <?php if (empty($comments)): ?>
-            <p>Nog geen reacties.</p>
-        <?php endif; ?>
-
-        <h3>Reactie plaatsen</h3>
-        <form method="POST" action="<?= route('comment/post') ?>">
-            <input type="hidden" name="video_id" value="<?= $video['id'] ?>">
-            <textarea name="content" rows="3" placeholder="Schrijf een reactie..." required></textarea><br>
-            <button type="submit">Plaatsen</button>
-        </form>
-
-</body>
-</html>
+<?php require VIEWS_PATH . '/partials/footer.php'; ?>

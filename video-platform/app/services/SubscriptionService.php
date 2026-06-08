@@ -36,4 +36,14 @@ class SubscriptionService
     {
         return $this->subscriptionModel->countForUser($leaderId);
     }
+
+    public function getSubscribers(int $leaderId): array
+    {
+        return $this->subscriptionModel->getSubscribers($leaderId);
+    }
+
+    public function getSubscriptions(int $subscriberId): array
+    {
+        return $this->subscriptionModel->getSubscriptions($subscriberId);
+    }
 }

@@ -27,7 +27,14 @@ class VideoController
     {
         requireLogin();
 
-        $videos = $this->videoService->getAllVideos();
+        // Optioneel filteren op categorie via ?cat=ID; anders alle video's
+        $categories = $this->categoryService->getAllCategories();
+        $activeCat  = (int) ($_GET['cat'] ?? 0);
+
+        $videos = $activeCat > 0
+            ? $this->videoService->getVideosByCategory($activeCat)
+            : $this->videoService->getAllVideos();
+
         require VIEWS_PATH . '/videos/index.php';
     }
 
@@ -57,6 +64,7 @@ class VideoController
         $userSubscribed  = $this->subscriptionService->isSubscribed((int) $_SESSION['user_id'], (int) $video['user_id']);
         $categories      = $this->categoryService->getAllCategories();
         $videoCategories = array_column($this->videoService->getCategoriesForVideo($id), 'id');
+        $recommended     = $this->videoService->getRecommended($id);
         require VIEWS_PATH . '/videos/show.php';
     }
 
@@ -98,5 +106,16 @@ class VideoController
         }
 
         require VIEWS_PATH . '/videos/upload.php';
+    }
+
+    // Verwijdert een eigen video. De service controleert het eigenaarschap.
+    public function delete(): void
+    {
+        requireLogin();
+
+        $videoId = (int) ($_POST['video_id'] ?? 0);
+        $this->videoService->delete($videoId, (int) $_SESSION['user_id']);
+
+        redirect(route('user/profile'));
     }
 }

@@ -24,6 +24,11 @@ class SubscriptionController
             $this->subscriptionService->toggle((int) $_SESSION['user_id'], $leaderId);
         }
 
-        redirect(route('video/show', ['id' => $videoId]));
+        // Kwam de knop van een videopagina? Ga daarheen terug, anders naar het profiel
+        if ($videoId > 0) {
+            redirect(route('video/show', ['id' => $videoId]));
+        }
+
+        redirect(route('user/profile', ['id' => $leaderId]));
     }
 }

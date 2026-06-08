@@ -1,0 +1,209 @@
+================================================================
+STREAMHIVE - OVERZICHT VAN ALLE WIJZIGINGEN (HTML/CSS/JS ronde)
+================================================================
+Datum: 2026-06-08
+Thema: bijen (honinggoud + warm zwart + honingraat-patronen)
+
+Lees vooral DEEL 3 ("EIGEN TOEVOEGINGEN"): dat zijn dingen die ik
+zelf heb bedacht/toegevoegd. Wil je ze niet? Dan staat er per punt
+precies wat je moet verwijderen.
+
+================================================================
+DEEL 1: NIEUWE BESTANDEN
+================================================================
+
+public/css/style.css
+    - Volledige stylesheet (was leeg). Bijen-thema, responsive,
+      alle pagina's, animaties (zie DEEL 4).
+
+public/js/main.js
+    - Interactie/animatie (was leeg): navbar-schaduw bij scrollen,
+      mobiel menu, scroll-reveal van videokaarten, "buzz" op de
+      like-knop, bestandsnaam tonen bij uploads, profiel-tabs en
+      een bevestiging bij verwijderen.
+
+public/images/logo.svg        << zie DEEL 3, punt 6 (fallback-logo)
+public/images/README.txt      << uitleg waar je logo.png moet zetten
+
+views/partials/header.php     (was leeg)  - <head>, CSS, body-open, bijen
+views/partials/navbar.php     (was leeg)  - navigatiebalk met zoekbalk
+views/partials/footer.php     (was leeg)  - footerbalk + main.js
+views/partials/bee.php        (nieuw)     - herbruikbare SVG-bij
+views/partials/video-card.php (nieuw)     - 1 videokaart voor de grids
+
+app/services/UserService.php  (nieuw)     - profiel ophalen + bijwerken
+
+================================================================
+DEEL 2: AANGEPASTE BESTANDEN (styling / structuur)
+================================================================
+
+app/config/app.php
+    + ASSETS_URL constant (web-pad naar /public voor css, js en logo).
+      NODIG: zonder dit laden de stylesheet en het logo niet.
+
+includes/helpers.php
+    + timeAgo()      -> "3 uur geleden" enz.  (zie DEEL 3, punt 4)
+    + formatCount()  -> 1200 wordt "1.2k"     (zie DEEL 3, punt 4)
+
+views/auth/login.php       - herbouwd met bijen-thema + logo
+views/auth/register.php    - herbouwd met bijen-thema + logo
+views/videos/index.php     - hero + videogrid via de partials
+views/videos/show.php      - speler, like, abonneren, categorieen, reacties
+views/videos/upload.php    - net formulier met chips voor categorieen
+views/videos/search.php    - zoekresultaten in dezelfde grid
+
+Alle views gebruiken nu header.php + footer.php in plaats van losse
+<html>-blokken. Niets aan de werking van inloggen/uploaden/zoeken/
+liken/abonneren/reageren is veranderd; alleen het uiterlijk.
+
+================================================================
+DEEL 3: EIGEN TOEVOEGINGEN (mag je weghalen als je wilt)
+================================================================
+
+PUNT 1 — PROFIELPAGINA / "MIJN KANAAL"
+    Je vroeg om de profielpagina, dus die is er nu:
+        views/user/profile.php   (was leeg, nu gevuld)
+        views/user/settings.php  (was leeg, nu gevuld)
+        app/controllers/UserController.php (was leeg, nu gevuld)
+        app/services/UserService.php (nieuw)
+        Routes in public/index.php:
+            user/profile, user/settings, user/update
+    Toont: avatar, naam, bio, statistieken en tabbladen met je
+    video's en je abonnees.
+    -> Niet nodig? Verwijder de 3 routes, UserController, UserService,
+       en de 2 user-views. Haal ook de links "Mijn kanaal" en het
+       avatar-rondje uit views/partials/navbar.php.
+
+PUNT 2 — TABBLAD "ABONNEMENTEN" (op wie JIJ geabonneerd bent)
+    Op je eigen kanaal zie je naast "Abonnees" ook "Abonnementen".
+    Hiervoor heb ik toegevoegd:
+        SubscriptionModel::getSubscribers()    (lijst van volgers)
+        SubscriptionModel::getSubscriptions()  (lijst die jij volgt)
+        SubscriptionService:: dezelfde twee methodes
+    -> Niet nodig? Verwijder die methodes en het derde tabblad in
+       views/user/profile.php (blok "tab-following").
+
+PUNT 3 — VIDEO VERWIJDEREN (alleen je eigen video's)
+    Op je eigen kanaal staat een prullenbak-knop op je videokaarten.
+        VideoController::delete()
+        VideoService::delete() + deleteFileIfExists()
+        Route: video/delete
+        Knop in views/partials/video-card.php (blok "owner-actions")
+    De bestanden op schijf worden ook opgeruimd.
+    -> Niet nodig? Verwijder de route, beide delete-methodes en het
+       "owner-actions"-blok in video-card.php.
+
+PUNT 4 — HULPFUNCTIES timeAgo() en formatCount()
+    Puur cosmetisch: "3 uur geleden" en "1.2k weergaven".
+    -> Niet nodig? Verwijder ze uit includes/helpers.php en vervang
+       in de views door $video['created_at'] / $video['views'].
+
+PUNT 5 — UPLOADER-NAAM BIJ ELKE VIDEO
+    VideoModel haalt nu via een JOIN ook users.username op als kolom
+    'uploader' (in getAll, getById, getByUser en search), zodat onder
+    elke video staat wie hem plaatste.
+    -> Niet nodig? Zet de queries terug naar "SELECT * FROM videos"
+       en haal de uploader-regels uit de views.
+
+PUNT 6 — AVATAR + BIO OP HET PROFIEL
+    De kolommen users.bio en users.profile_image bestonden al in je
+    schema en in UserModel::updateProfile(). Ik gebruik ze nu echt:
+    avatar uploaden en bio bewerken op de instellingenpagina.
+    Avatars worden opgeslagen in: uploads/avatars/ (map wordt
+    automatisch aangemaakt bij de eerste upload).
+    -> Niet nodig? Haal de avatar/bio-velden uit settings.php en
+       profile.php. (De kolommen mogen dan in de database blijven.)
+
+PUNT 7 — FALLBACK-LOGO (logo.svg)
+    Omdat ik jouw PNG niet zelf kan opslaan, heb ik een SVG-versie
+    van het logo (bij + honingraat + play-knop) gemaakt als
+    terugval. De pagina's verwijzen naar logo.png en vallen
+    automatisch terug op logo.svg als die er nog niet is.
+    -> ACTIE VOOR JOU: zet jouw logo als public/images/logo.png.
+       Dan verschijnt overal jouw eigen logo.
+    -> Niet nodig? Verwijder logo.svg en de onerror="..." stukjes
+       in navbar.php, footer.php, login.php en register.php.
+
+PUNT 8 — FOOTERBALK
+    Onderaan elke (ingelogde) pagina staat een footer met logo en
+    "© StreamHive — Watch · Share · Connect".
+    -> Niet nodig? Verwijder het <footer>-blok in
+       views/partials/footer.php.
+
+PUNT 9 — YOUTUBE-INDELING OP DE VIDEOPAGINA + AANBEVOLEN
+    De videopagina (show.php) heeft nu een tweekolomsindeling:
+    links de speler met daaronder titel/uploader/knoppen/beschrijving
+    en reacties, rechts een lijst "Aanbevolen" met andere video's.
+    Hiervoor toegevoegd:
+        VideoService::getRecommended(excludeId, limit)
+        $recommended in VideoController::show()
+        CSS: .watch-layout, .watch-main, .watch-sidebar, .rec-card
+    -> Niet nodig? Haal het <aside class="watch-sidebar"> blok uit
+       show.php en gebruik weer 1 kolom; verwijder getRecommended().
+
+PUNT 10 — CATEGORIE-FILTER OP DE HOMEPAGE
+    Onder de hero staat een balk met categorie-chips ("Alles" + elke
+    categorie). Klikken filtert de homepage op die categorie via ?cat=ID.
+    Hiervoor toegevoegd:
+        VideoModel::getByCategory(categoryId)
+        VideoService::getVideosByCategory(categoryId)
+        VideoController::index() leest ?cat= en filtert
+        CSS: .cat-bar, .cat-chip-link
+    -> Niet nodig? Verwijder de .cat-bar in index.php, de ?cat-logica
+       in index() en bovenstaande model/service-methodes.
+
+PUNT 11 — RIJKERE HERO + GECENTREERD GRID
+    De hero heeft nu het logo als illustratie rechts, en het videogrid
+    is gecentreerd (flexbox) zodat een paar video's niet links blijven
+    hangen op een breed scherm.
+    -> Niet nodig? Haal <img class="hero-art"> uit index.php en zet
+       .video-grid in style.css terug op display:grid.
+
+================================================================
+DEEL 4: ANIMATIES (allemaal in CSS, in style.css)
+================================================================
+- Vliegende bijen die zacht over de achtergrond zweven (.bee-float)
+  met fladderende vleugels (@keyframes wing-flap + bee-fly).
+- Honingraat-patroon als subtiele achtergrond over de hele site.
+- Videokaarten "vliegen" omhoog bij scrollen (scroll-reveal via JS)
+  en lichten goud op bij hover; de thumbnail zoomt licht in.
+- Like-knop trilt kort ("buzz") bij het klikken.
+- Auth-kaart valt naar binnen (dropIn) en het logo deint (bob).
+- Navbar krijgt schaduw zodra je scrollt.
+- Knoppen liften licht op bij hover.
+- Respecteert "prefers-reduced-motion": animaties uit voor wie dat
+  in zijn systeem heeft ingesteld.
+
+================================================================
+DEEL 5: HOE OPENEN / TESTEN
+================================================================
+1. Zet (als je wilt) je logo neer: public/images/logo.png
+2. Open de site zoals altijd via de front controller:
+   http://localhost/GitHub/StreamHive/video-platform/public/index.php
+3. Niet ingelogd -> je komt op de login-pagina.
+4. Navigatie werkt via de navbar: Home, Upload, zoekbalk,
+   avatar-rondje (= Mijn kanaal) en Uitloggen.
+
+LET OP — database ongewijzigd:
+   Er zijn GEEN nieuwe tabellen of kolommen nodig. Alles draait op je
+   bestaande schema (inclusief de al aanwezige bio/profile_image).
+   Voor avatars maakt de code de map uploads/avatars/ vanzelf aan.
+
+================================================================
+DEEL 6: BIJWERKEN IN JE ERD / UML (als je de extra's houdt)
+================================================================
+ERD:
+   - users: bio (TEXT) en profile_image (VARCHAR) erbij.
+   - subscriptions gebruikt subscriber_id + leader_id (niet follower_id).
+
+UML — nieuwe/gewijzigde klassen:
+   + UserService      : getProfile(id), updateProfile(id, username, bio, imageFile, currentImage)
+   + UserController   : profile(), settings(), update()
+   ~ VideoModel       : getAll/getById/getByUser/search geven nu ook 'uploader'
+   + VideoModel       : getByCategory(categoryId)
+   + VideoService     : getVideosByUser(userId), delete(videoId, userId),
+                        getVideosByCategory(categoryId), getRecommended(excludeId, limit)
+   + VideoController  : delete()
+   + SubscriptionModel: getSubscribers(leaderId), getSubscriptions(subscriberId)
+   + SubscriptionService: getSubscribers(), getSubscriptions()
+================================================================

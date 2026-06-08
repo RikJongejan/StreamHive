@@ -1,50 +1,45 @@
 <?php
-// search.php - Zoekresultaten pagina
-// Toont videos die overeenkomen met de zoekopdracht
-// Data komt binnen via VideoController als $videos array en $query string
+// search.php - Zoekresultatenpagina
+// Toont video's die overeenkomen met de zoekopdracht in hetzelfde grid als de homepage.
+// Data komt binnen via VideoController als $videos array en $query string.
+$pageTitle = 'Zoeken';
+require VIEWS_PATH . '/partials/header.php';
 ?>
-<!DOCTYPE html>
-<html lang="nl">
-<head>
-    <meta charset="UTF-8">
-    <title>Zoekresultaten - StreamHive</title>
-</head>
-<body>
 
-    <a href="<?= route('video/index') ?>">&larr; Terug</a>
+<main class="page">
+    <div class="container">
 
-    <h1>Zoekresultaten voor: "<?= htmlspecialchars($query) ?>"</h1>
+        <a class="back-link" href="<?= route('video/index') ?>">
+            <i class="fa-solid fa-arrow-left"></i> Terug naar home
+        </a>
 
-    <form method="GET" action="<?= route('video/search') ?>" style="margin-bottom: 24px;">
-        <input type="text" name="query" value="<?= htmlspecialchars($query) ?>" placeholder="Zoek op titel of beschrijving..." style="width: 300px; padding: 6px;">
-        <button type="submit">Zoeken</button>
-    </form>
-
-    <?php if (empty($videos)): ?>
-        <p>Geen videos gevonden voor "<?= htmlspecialchars($query) ?>".</p>
-    <?php else: ?>
-        <p><?= count($videos) ?> video('s) gevonden.</p>
-
-        <div style="display: flex; flex-wrap: wrap; gap: 16px;">
-            <?php foreach ($videos as $video): ?>
-                <a href="<?= route('video/show', ['id' => $video['id']]) ?>"
-                   style="text-decoration: none; color: inherit; width: 200px;">
-
-                    <?php if (!empty($video['thumbnail'])): ?>
-                        <img src="<?= UPLOADS_URL ?>/thumbnails/<?= htmlspecialchars($video['thumbnail']) ?>"
-                             style="width: 200px; height: 120px; object-fit: cover;">
-                    <?php else: ?>
-                        <div style="width: 200px; height: 120px; background: #333; display: flex; align-items: center; justify-content: center; color: white;">
-                            Geen thumbnail
-                        </div>
-                    <?php endif; ?>
-
-                    <p><strong><?= htmlspecialchars($video['title']) ?></strong></p>
-                    <p><?= $video['views'] ?> views</p>
-                </a>
-            <?php endforeach; ?>
+        <div class="section-head">
+            <h2><i class="fa-solid fa-magnifying-glass"></i> Zoekresultaten</h2>
         </div>
-    <?php endif; ?>
 
-</body>
-</html>
+        <?php if ($query === ''): ?>
+            <p class="search-summary">Typ iets in de zoekbalk om video's te vinden.</p>
+        <?php else: ?>
+            <p class="search-summary">
+                <?= count($videos) ?> resultaat<?= count($videos) === 1 ? '' : 'en' ?>
+                voor &ldquo;<b><?= htmlspecialchars($query) ?></b>&rdquo;
+            </p>
+        <?php endif; ?>
+
+        <?php if ($query !== '' && empty($videos)): ?>
+            <div class="empty-state">
+                <?php $beeWrap = null; require VIEWS_PATH . '/partials/bee.php'; ?>
+                <h3>Niets gevonden</h3>
+                <p>Geen video's voor &ldquo;<?= htmlspecialchars($query) ?>&rdquo;. Probeer een ander woord.</p>
+                <a class="btn btn-ghost" href="<?= route('video/index') ?>">Terug naar home</a>
+            </div>
+        <?php elseif (!empty($videos)): ?>
+            <div class="video-grid">
+                <?php $cardOwner = false; foreach ($videos as $card) { require VIEWS_PATH . '/partials/video-card.php'; } ?>
+            </div>
+        <?php endif; ?>
+
+    </div>
+</main>
+
+<?php require VIEWS_PATH . '/partials/footer.php'; ?>

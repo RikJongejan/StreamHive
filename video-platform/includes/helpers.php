@@ -35,3 +35,25 @@ function setUserSession(array $user): void
     $_SESSION['username'] = $user['username'];
     $_SESSION['role']     = $user['role'];
 }
+
+// Zet een datum/tijd om in een korte "x geleden" tekst voor in de views
+function timeAgo(string $datetime): string
+{
+    $seconds = time() - strtotime($datetime);
+
+    if ($seconds < 60)    return 'zojuist';
+    if ($seconds < 3600)  return floor($seconds / 60)    . ' min geleden';
+    if ($seconds < 86400) return floor($seconds / 3600)  . ' uur geleden';
+    if ($seconds < 604800)return floor($seconds / 86400) . ' dagen geleden';
+
+    return date('d-m-Y', strtotime($datetime));
+}
+
+// Maakt korte aantallen leesbaar (1200 -> 1,2k) voor weergaven en abonnees
+function formatCount(int $number): string
+{
+    if ($number >= 1000000) return round($number / 1000000, 1) . 'M';
+    if ($number >= 1000)    return round($number / 1000, 1) . 'k';
+
+    return (string) $number;
+}

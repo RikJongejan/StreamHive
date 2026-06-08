@@ -39,4 +39,32 @@ class SubscriptionModel
         $stmt->execute([$leaderId]);
         return (int) $stmt->fetchColumn();
     }
+
+    // Lijst van gebruikers die deze leader volgen (voor op de profielpagina)
+    public function getSubscribers(int $leaderId): array
+    {
+        $stmt = $this->pdo->prepare("
+            SELECT users.id, users.username, users.profile_image
+            FROM subscriptions
+            JOIN users ON subscriptions.subscriber_id = users.id
+            WHERE subscriptions.leader_id = ?
+            ORDER BY subscriptions.created_at DESC
+        ");
+        $stmt->execute([$leaderId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    // Lijst van gebruikers op wie deze gebruiker zelf geabonneerd is
+    public function getSubscriptions(int $subscriberId): array
+    {
+        $stmt = $this->pdo->prepare("
+            SELECT users.id, users.username, users.profile_image
+            FROM subscriptions
+            JOIN users ON subscriptions.leader_id = users.id
+            WHERE subscriptions.subscriber_id = ?
+            ORDER BY subscriptions.created_at DESC
+        ");
+        $stmt->execute([$subscriberId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

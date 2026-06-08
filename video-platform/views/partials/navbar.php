@@ -1,7 +1,38 @@
 <?php
-// navbar.php - Navigatiebalk zichtbaar op elke pagina
-// Toont: logo en links naar homepagina en upload
-// Ingelogd: profiellink en uitlogknop
-// Niet ingelogd: login en registreer knop
-// Gebruik $_SESSION['user_id'] om te checken of iemand ingelogd is
+// navbar.php - Navigatiebalk die op elke ingelogde pagina zichtbaar is
+// Toont: logo, zoekbalk, en links naar home, upload, profiel en uitloggen.
+// Bij niet-ingelogd (zelden, want pagina's vereisen login) tonen we login/registreer.
+$navUser = $_SESSION['username'] ?? '';
+$navInitial = $navUser !== '' ? strtoupper(substr($navUser, 0, 1)) : '?';
 ?>
+<nav class="nav">
+    <div class="container">
+
+        <a class="brand" href="<?= route('video/index') ?>">
+            <img src="<?= ASSETS_URL ?>/images/logo.png" alt="StreamHive logo"
+                 onerror="this.onerror=null;this.src='<?= ASSETS_URL ?>/images/logo.svg'">
+            <span><span class="b-stream">Stream</span><span class="b-hive">Hive</span></span>
+        </a>
+
+        <form class="nav-search" method="GET" action="<?= BASE_URL ?>" role="search">
+            <input type="hidden" name="route" value="video/search">
+            <input type="text" name="query" placeholder="Zoek video's..." aria-label="Zoeken">
+            <button type="submit" aria-label="Zoeken"><i class="fa-solid fa-magnifying-glass"></i></button>
+        </form>
+
+        <button class="nav-toggle" aria-label="Menu"><i class="fa-solid fa-bars"></i></button>
+
+        <div class="nav-links">
+            <?php if (isLoggedIn()): ?>
+                <a class="nav-link" href="<?= route('video/index') ?>"><i class="fa-solid fa-house"></i> Home</a>
+                <a class="nav-link" href="<?= route('video/upload') ?>"><i class="fa-solid fa-cloud-arrow-up"></i> Upload</a>
+                <a class="nav-link" href="<?= route('auth/logout') ?>"><i class="fa-solid fa-right-from-bracket"></i> Uitloggen</a>
+                <a class="nav-avatar" href="<?= route('user/profile') ?>" title="Mijn kanaal (<?= htmlspecialchars($navUser) ?>)"><?= htmlspecialchars($navInitial) ?></a>
+            <?php else: ?>
+                <a class="nav-link" href="<?= route('auth/login') ?>">Inloggen</a>
+                <a class="btn btn-honey" href="<?= route('auth/register') ?>">Registreren</a>
+            <?php endif; ?>
+        </div>
+
+    </div>
+</nav>

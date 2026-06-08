@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="StreamHive">
+    <defs>
+        <linearGradient id="honey" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#ffd54f"/>
+            <stop offset="1" stop-color="#ff8f00"/>
+        </linearGradient>
+        <clipPath id="beebody"><ellipse cx="0" cy="0" rx="13" ry="9"/></clipPath>
+    </defs>
+
+    <!-- honingraat-badge -->
+    <path d="M60 6 L106 33 V87 L60 114 L14 87 V33 Z"
+          fill="#1a1a17" stroke="url(#honey)" stroke-width="6" stroke-linejoin="round"/>
+
+    <!-- play-knop -->
+    <circle cx="58" cy="64" r="28" fill="url(#honey)"/>
+    <path d="M50 51 L74 64 L50 77 Z" fill="#1a1a17"/>
+
+    <!-- klein bijtje rechtsboven -->
+    <g transform="translate(90,24) rotate(15)">
+        <ellipse cx="-9" cy="-8" rx="7" ry="4.5" fill="rgba(255,255,255,.75)"/>
+        <ellipse cx="2" cy="-9" rx="7" ry="4.5" fill="rgba(255,255,255,.75)"/>
+        <ellipse cx="0" cy="0" rx="13" ry="9" fill="#ffc107"/>
+        <g clip-path="url(#beebody)" fill="#1a1a17">
+            <rect x="-7" y="-10" width="4" height="20"/>
+            <rect x="0" y="-10" width="4" height="20"/>
+            <rect x="7" y="-10" width="4" height="20"/>
+        </g>
+        <circle cx="12" cy="-1" r="5" fill="#1a1a17"/>
+    </g>
+</svg>
