@@ -74,16 +74,6 @@ CREATE TABLE `subscriptions` (
     FOREIGN KEY (`leader_id`)     REFERENCES `users` (`id`) ON DELETE CASCADE
 );
 
-CREATE TABLE `password_reset` (
-    `id`            INT             NOT NULL AUTO_INCREMENT,
-    `user_id`       INT             NOT NULL,
-    `token`         VARCHAR(255)    NOT NULL UNIQUE,
-    `expires_at`    TIMESTAMP       NOT NULL,
-
-    PRIMARY KEY (`id`),
-    FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-);
-
 -- Categorieen staan los van videos zodat dezelfde categorie bij meerdere videos kan horen
 CREATE TABLE `categories` (
     `id`            INT             NOT NULL AUTO_INCREMENT,
