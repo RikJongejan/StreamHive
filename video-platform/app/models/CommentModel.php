@@ -15,7 +15,7 @@ class CommentModel
         $this->pdo = $pdo;
     }
 
-    // JOIN with users so the view does not need a second query to get the username
+    // JOIN met users zodat de view geen tweede query nodig heeft om de gebruikersnaam op te halen
     public function getByVideo(int $videoId): array
     {
         $stmt = $this->pdo->prepare("

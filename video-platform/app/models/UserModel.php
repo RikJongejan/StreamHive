@@ -42,7 +42,7 @@ class UserModel
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    // Checks email and username before inserting to prevent duplicates
+    // Controleert email en gebruikersnaam vooraf om dubbele accounts te voorkomen
     public function register(string $email, string $username, string $password): bool
     {
         if ($this->getByEmail($email)) return false;

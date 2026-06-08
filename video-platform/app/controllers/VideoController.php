@@ -38,7 +38,7 @@ if ($action === 'show')
         exit;
     }
 
-    // Prevents the same user from adding a view on every refresh
+    // zorgt ervoor dat dezelfde user geen extra view per refresh kan geven.
     if (!isset($_SESSION['viewed_videos'][$id]))
     {
         $videoModel->incrementViews($id);
@@ -55,8 +55,8 @@ if ($action === 'upload')
 {
     if ($_SERVER['REQUEST_METHOD'] === 'POST')
     {
-        $title       = sanitize($_POST['title'] ?? '');
-        $description = sanitize($_POST['description'] ?? '');
+        $title       = sanitiza($_POST['title'] ?? '');
+        $description = sanitiza($_POST['description'] ?? '');
         $userId      = $_SESSION['user_id'];
 
         $videoFile     = $_FILES['video'];

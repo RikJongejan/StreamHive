@@ -48,7 +48,7 @@ class VideoModel
         return $stmt->execute([$id]);
     }
 
-    // Session check in controller prevents the same user from counting multiple views on refresh
+    // Sessiecheck in de controller zorgt dat dezelfde gebruiker niet meerdere views kan geven bij refreshen
     public function incrementViews(int $id): bool
     {
         $stmt = $this->pdo->prepare("UPDATE videos SET views = views + 1 WHERE id = ?");

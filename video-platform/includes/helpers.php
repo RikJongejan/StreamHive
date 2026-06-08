@@ -10,12 +10,12 @@ function redirect(string $url): void
     exit;
 }
 
-function sanitize(string $input): string
+function sanitiza(string $input): string
 {
     return htmlspecialchars(trim($input), ENT_QUOTES, 'UTF-8');
 }
 
-// Extracted to avoid repeating session assignment in every auth flow (login + register)
+// Aparte functie om te voorkomen dat sessie-instelling dubbel staat bij login en registratie
 function setUserSession(array $user): void
 {
     $_SESSION['user_id']  = $user['id'];
