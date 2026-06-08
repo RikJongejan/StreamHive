@@ -46,6 +46,15 @@
             background: #e0e0e0;
             color: #222;
         }
+        .category-tag {
+            display: inline-block;
+            padding: 3px 10px;
+            background: #f0f0f0;
+            border-radius: 12px;
+            font-size: 13px;
+            color: #444;
+            margin-right: 6px;
+        }
     </style>
 </head>
 <body>
@@ -64,6 +73,16 @@
 
     <p><?= $video['views'] ?> views</p>
     <p><?= htmlspecialchars($video['description']) ?></p>
+
+    <?php if (!empty($videoCategories)): ?>
+        <div style="margin-bottom: 8px;">
+            <?php foreach ($categories as $category): ?>
+                <?php if (in_array($category['id'], $videoCategories)): ?>
+                    <span class="category-tag"><?= htmlspecialchars($category['name']) ?></span>
+                <?php endif; ?>
+            <?php endforeach; ?>
+        </div>
+    <?php endif; ?>
 
     <div style="display: flex; align-items: center; gap: 12px; margin: 12px 0;">
 

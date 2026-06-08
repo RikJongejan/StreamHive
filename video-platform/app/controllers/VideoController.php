@@ -12,6 +12,7 @@ class VideoController
     private CommentService $commentService;
     private LikeService $likeService;
     private SubscriptionService $subscriptionService;
+    private CategoryService $categoryService;
 
     public function __construct(PDO $pdo)
     {
@@ -19,6 +20,7 @@ class VideoController
         $this->commentService      = new CommentService($pdo);
         $this->likeService         = new LikeService($pdo);
         $this->subscriptionService = new SubscriptionService($pdo);
+        $this->categoryService     = new CategoryService($pdo);
     }
 
     public function index(): void
@@ -53,6 +55,8 @@ class VideoController
         $userLiked       = $this->likeService->hasLiked((int) $_SESSION['user_id'], $id);
         $subscriberCount = $this->subscriptionService->getSubscriberCount((int) $video['user_id']);
         $userSubscribed  = $this->subscriptionService->isSubscribed((int) $_SESSION['user_id'], (int) $video['user_id']);
+        $categories      = $this->categoryService->getAllCategories();
+        $videoCategories = array_column($this->videoService->getCategoriesForVideo($id), 'id');
         require VIEWS_PATH . '/videos/show.php';
     }
 
@@ -69,7 +73,8 @@ class VideoController
     {
         requireLogin();
 
-        $error = '';
+        $error      = '';
+        $categories = $this->categoryService->getAllCategories();
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $result = $this->videoService->upload(
@@ -81,6 +86,11 @@ class VideoController
             );
 
             if ($result['success']) {
+                $this->categoryService->saveForVideo(
+                    $result['videoId'],
+                    $_POST['categories'] ?? [],
+                    sanitize($_POST['new_categories'] ?? '')
+                );
                 redirect(route('video/index'));
             }
 

@@ -25,6 +25,11 @@ class VideoService
         return $this->videoModel->getById($id);
     }
 
+    public function getCategoriesForVideo(int $videoId): array
+    {
+        return $this->videoModel->getCategories($videoId);
+    }
+
     public function search(string $query): array
     {
         return $this->videoModel->search($query);
@@ -47,7 +52,7 @@ class VideoService
         }
 
         if ($videoFile['size'] > MAX_VIDEO_SIZE) {
-            return ['success' => false, 'error' => 'Video is too large (max 100MB).'];
+            return ['success' => false, 'error' => 'Video is too large (max 500MB).'];
         }
 
         if (!in_array(mime_content_type($videoFile['tmp_name']), ['video/mp4', 'video/webm', 'video/ogg'])) {
@@ -71,12 +76,12 @@ class VideoService
         $videoName      = uniqid('video_', true) . '.' . $videoExtension;
         move_uploaded_file($videoFile['tmp_name'], UPLOADS_PATH . '/videos/' . $videoName);
 
-        $saved = $this->videoModel->upload($userId, $title, $description, $videoName, $thumbnailName);
+        $videoId = $this->videoModel->upload($userId, $title, $description, $videoName, $thumbnailName);
 
-        if (!$saved) {
+        if (!$videoId) {
             return ['success' => false, 'error' => 'Saving to database failed.'];
         }
 
-        return ['success' => true];
+        return ['success' => true, 'videoId' => $videoId];
     }
 }

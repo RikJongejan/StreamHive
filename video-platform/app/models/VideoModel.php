@@ -36,10 +36,14 @@ class VideoModel
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function upload(int $userId, string $title, string $description, string $filename, string $thumbnail): bool
+    // Geeft het ID van de nieuwe video terug zodat er direct categorieen aan gekoppeld kunnen worden
+    public function upload(int $userId, string $title, string $description, string $filename, string $thumbnail): int|false
     {
         $stmt = $this->pdo->prepare("INSERT INTO videos (user_id, title, description, filename, thumbnail) VALUES (?, ?, ?, ?, ?)");
-        return $stmt->execute([$userId, $title, $description, $filename, $thumbnail]);
+        if (!$stmt->execute([$userId, $title, $description, $filename, $thumbnail])) {
+            return false;
+        }
+        return (int) $this->pdo->lastInsertId();
     }
 
     public function delete(int $id): bool

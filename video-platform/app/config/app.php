@@ -20,5 +20,5 @@ define('UPLOADS_PATH', realpath(__DIR__ . '/../../uploads'));
 // Map met de views
 define('VIEWS_PATH', realpath(__DIR__ . '/../../views'));
 
-// Maximale uploadgrootte voor video's (100 MB)
-define('MAX_VIDEO_SIZE', 100 * 1024 * 1024);
+// Maximale uploadgrootte voor video's (500 MB)
+define('MAX_VIDEO_SIZE', 500 * 1024 * 1024);
