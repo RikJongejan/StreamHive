@@ -16,7 +16,11 @@ class LikeController
     {
         requireLogin();
 
-        $videoId = (int) ($_POST['video_id'] ?? 0);
+        if (isset($_POST['video_id'])) {
+            $videoId = (int) $_POST['video_id'];
+        } else {
+            $videoId = 0;
+        }
 
         if ($videoId > 0) {
             $this->likeService->toggle((int) $_SESSION['user_id'], $videoId);
