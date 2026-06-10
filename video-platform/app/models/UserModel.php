@@ -45,8 +45,13 @@ class UserModel
     // Controleert email en gebruikersnaam vooraf om dubbele accounts te voorkomen
     public function register(string $email, string $username, string $password): bool
     {
-        if ($this->getByEmail($email)) return false;
-        if ($this->getByUsername($username)) return false;
+        if ($this->getByEmail($email)) {
+            return false;
+        }
+
+        if ($this->getByUsername($username)) {
+            return false;
+        }
 
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
         $stmt = $this->pdo->prepare("INSERT INTO users (email, username, password) VALUES (?, ?, ?)");
@@ -57,8 +62,10 @@ class UserModel
     {
         $user = $this->getByEmail($email);
 
-        if ($user && password_verify($password, $user['password'])) {
-            return $user;
+        if ($user) {
+            if (password_verify($password, $user['password'])) {
+                return $user;
+            }
         }
 
         return false;
