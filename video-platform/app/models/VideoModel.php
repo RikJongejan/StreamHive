@@ -56,11 +56,15 @@ class VideoModel
     // Geeft het ID van de nieuwe video terug zodat er direct categorieen aan gekoppeld kunnen worden
     public function upload(int $userId, string $title, string $description, string $filename, string $thumbnail): int|false
     {
-        $stmt = $this->pdo->prepare("INSERT INTO videos (user_id, title, description, filename, thumbnail) VALUES (?, ?, ?, ?, ?)");
-        if (!$stmt->execute([$userId, $title, $description, $filename, $thumbnail])) {
+        $stmt    = $this->pdo->prepare("INSERT INTO videos (user_id, title, description, filename, thumbnail) VALUES (?, ?, ?, ?, ?)");
+        $success = $stmt->execute([$userId, $title, $description, $filename, $thumbnail]);
+
+        if (!$success) {
             return false;
         }
-        return (int) $this->pdo->lastInsertId();
+
+        $newId = (int) $this->pdo->lastInsertId();
+        return $newId;
     }
 
     public function delete(int $id): bool
