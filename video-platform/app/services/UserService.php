@@ -1,9 +1,8 @@
 <?php
-// UserService.php - Logica laag voor gebruikersprofielen
-// Regelt het ophalen van een profiel en het bijwerken ervan (naam, bio, avatar).
-// De authenticatie (in/uitloggen, registreren) zit bewust apart in AuthService;
-// deze service gaat alleen over het profiel zelf.
-
+// UserService.php - Service voor gebruikersbeheer
+// Bevat de bedrijfslogica voor gebruikersprofielen:
+// - Profiel ophalen
+// - Profielgegevens bijwerken inclusief avatar-upload en validatie
 class UserService
 {
     private UserModel $userModel;
@@ -18,7 +17,6 @@ class UserService
         return $this->userModel->getById($id);
     }
 
-    // Werkt het profiel bij. Geeft array terug met 'success' en bij fout 'error'.
     // $imageFile is het $_FILES-element van de avatar (mag null zijn als er niets wijzigt).
     public function updateProfile(int $id, string $username, string $bio, ?array $imageFile, string $currentImage): array
     {
@@ -40,19 +38,19 @@ class UserService
                 return ['success' => false, 'error' => 'Avatar moet JPG, PNG of WebP zijn.'];
             }
 
-            $dir = UPLOADS_PATH . '/avatars';
-            if (!is_dir($dir)) {
-                mkdir($dir, 0777, true);
+            $uploadDirectory = UPLOADS_PATH . '/avatars';
+            if (!is_dir($uploadDirectory)) {
+                mkdir($uploadDirectory, 0777, true);
             }
 
             $extension = pathinfo($imageFile['name'], PATHINFO_EXTENSION);
             $imageName = uniqid('avatar_', true) . '.' . $extension;
-            move_uploaded_file($imageFile['tmp_name'], $dir . '/' . $imageName);
+            move_uploaded_file($imageFile['tmp_name'], $uploadDirectory . '/' . $imageName);
         }
 
-        $ok = $this->userModel->updateProfile($id, $username, $bio, $imageName);
+        $updated = $this->userModel->updateProfile($id, $username, $bio, $imageName);
 
-        if (!$ok) {
+        if (!$updated) {
             return ['success' => false, 'error' => 'Opslaan is mislukt.'];
         }
 

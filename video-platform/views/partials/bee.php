@@ -1,15 +1,16 @@
 <?php
-// bee.php - Herbruikbare SVG-bij met fladderende vleugels
-// Zet vooraf $beeWrap voor een extra wrapper-class (bijv. 'bee-float').
-// Laat $beeWrap leeg/null voor een losse bij (bijv. in een lege-staat).
-// $cid maakt de clip-path uniek zodat meerdere bijen op 1 pagina blijven werken.
+// bee.php - Geanimeerde bij voor lege toestanden
+// Toont de SVG-animatie van de bij op pagina's zonder inhoud:
+// - $beeWrap: optionele CSS-klasse voor de wrapper
+// - Genereert een uniek clipId zodat meerdere instanties naast elkaar werken
 $beeWrap = $beeWrap ?? null;
-$cid = 'bee' . uniqid();
+// Uniek ID per instantie zodat meerdere bijen op dezelfde pagina niet elkaars clip-path overschrijven
+$clipId = 'bee' . uniqid();
 ?>
 <?php if ($beeWrap !== null): ?><div class="<?= htmlspecialchars($beeWrap) ?>"><?php endif; ?>
 <svg class="bee" viewBox="0 0 96 64" xmlns="http://www.w3.org/2000/svg">
     <defs>
-        <clipPath id="<?= $cid ?>"><ellipse cx="50" cy="38" rx="26" ry="17"/></clipPath>
+        <clipPath id="<?= $clipId ?>"><ellipse cx="50" cy="38" rx="26" ry="17"/></clipPath>
     </defs>
     <!-- voelsprieten -->
     <path d="M74 26 q8 -14 16 -16" stroke="#1a1a17" stroke-width="3" fill="none" stroke-linecap="round"/>
@@ -20,7 +21,7 @@ $cid = 'bee' . uniqid();
     <!-- lijf -->
     <ellipse cx="50" cy="38" rx="26" ry="17" fill="#ffc107"/>
     <!-- strepen, netjes binnen het lijf geknipt -->
-    <g clip-path="url(#<?= $cid ?>)" fill="#1a1a17">
+    <g clip-path="url(#<?= $clipId ?>)" fill="#1a1a17">
         <rect x="38" y="18" width="8" height="42"/>
         <rect x="52" y="18" width="8" height="42"/>
         <rect x="66" y="18" width="8" height="42"/>

@@ -1,10 +1,11 @@
 <?php
 // SubscriptionModel.php - Model voor abonnementen tussen gebruikers
-// Bijhoudt wie wie volgt, vergelijkbaar met YouTube abonnementen:
-// - subscriber_id: de gebruiker die iemand volgt
-// - leader_id: de gebruiker die gevolgd wordt
+// Beheert het volgen en ontvolgen van kanalen:
+// - Abonneren en opzeggen
+// - Controleren of een gebruiker al geabonneerd is
+// - Abonneeaantal ophalen
+// - Lijst van abonnees en abonnementen ophalen
 // Werkt met de 'subscriptions' tabel in de database
-
 class SubscriptionModel
 {
     private PDO $pdo;

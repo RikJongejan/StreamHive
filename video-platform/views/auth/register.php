@@ -1,8 +1,8 @@
 <?php
-// register.php - Registratiepagina
-// Toont het registratieformulier voor nieuwe gebruikers in een gecentreerde kaart.
-// Velden: e-mail, gebruikersnaam, wachtwoord, wachtwoord bevestigen.
-// Bij submit verwerkt AuthController de gegevens; bij fout staat $error gevuld.
+// register.php - View voor de registratiepagina
+// Toont het registratieformulier met e-mail, gebruikersnaam en wachtwoordvelden
+// Geeft een foutmelding als de registratie mislukt
+$error     = $error ?? '';
 $pageTitle = 'Registreren';
 $hideNav   = true;
 require VIEWS_PATH . '/partials/header.php';

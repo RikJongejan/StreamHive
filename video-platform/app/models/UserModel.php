@@ -1,11 +1,11 @@
 <?php
-// UserModel.php - Model voor de gebruiker
-// Bevat alle logica rondom gebruikers:
-// - Registreren, inloggen, uitloggen
-// - Profiel ophalen en updaten
+// UserModel.php - Model voor gebruikers
+// Beheert alle gebruikersgerelateerde databaseoperaties:
+// - Gebruiker registreren en inloggen
+// - Gebruiker ophalen op id, e-mail of gebruikersnaam
+// - Profielgegevens bijwerken
 // - Account verwijderen
-// Werkt direct met de 'users' tabel in de database
-
+// Werkt met de 'users' tabel in de database
 class UserModel
 {
     private PDO $pdo;
@@ -48,17 +48,16 @@ class UserModel
         if ($this->getByEmail($email)) return false;
         if ($this->getByUsername($username)) return false;
 
-        $hashed = password_hash($password, PASSWORD_DEFAULT);
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
         $stmt = $this->pdo->prepare("INSERT INTO users (email, username, password) VALUES (?, ?, ?)");
-        return $stmt->execute([$email, $username, $hashed]);
+        return $stmt->execute([$email, $username, $hashedPassword]);
     }
 
     public function login(string $email, string $password): array|false
     {
         $user = $this->getByEmail($email);
 
-        if ($user && password_verify($password, $user['password']))
-        {
+        if ($user && password_verify($password, $user['password'])) {
             return $user;
         }
 

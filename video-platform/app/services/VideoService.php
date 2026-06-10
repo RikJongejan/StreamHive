@@ -1,11 +1,11 @@
 <?php
-// VideoService.php - Logica laag voor video's
-// Bevat alle regels rondom video's:
-// - Video's ophalen voor het overzicht en de detailpagina
-// - Een upload valideren (titel, bestandstype, grootte) en opslaan op schijf
-// - De view-teller ophogen
-// De controller roept deze service aan; hier zit geen HTML en geen request-afhandeling.
-
+// VideoService.php - Service voor video-gerelateerde bedrijfslogica
+// Bevat de bedrijfslogica rondom video's:
+// - Video's ophalen en zoeken
+// - Uploaden met bestandsvalidatie en opslag
+// - Verwijderen inclusief bestanden op schijf
+// - Weergaveteller ophogen
+// - Aanbevelingen genereren
 class VideoService
 {
     private VideoModel $videoModel;

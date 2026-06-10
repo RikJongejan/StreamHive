@@ -1,10 +1,8 @@
 <?php
-// CommentService.php - Logica laag voor reacties
-// Bevat de regels rondom reacties op video's:
-// - Reacties van een video ophalen (met gebruikersnaam erbij)
-// - Een nieuwe reactie plaatsen
-// De controller roept deze service aan en houdt zich alleen met de request bezig.
-
+// CommentService.php - Service voor reacties op video's
+// Bevat de bedrijfslogica voor commentaren:
+// - Reacties ophalen voor een video
+// - Nieuwe reactie plaatsen
 class CommentService
 {
     private CommentModel $commentModel;

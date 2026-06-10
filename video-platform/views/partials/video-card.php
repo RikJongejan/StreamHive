@@ -1,7 +1,9 @@
 <?php
-// video-card.php - Een enkele videokaart voor in een grid
-// Verwacht $card (een video-rij met id, title, thumbnail, views, user_id, uploader).
-// Zet $cardOwner = true voor een verwijderknop (op het eigen kanaal).
+// video-card.php - Herbruikbare videokaart partial
+// Toont een enkele videokaart in een grid:
+// - Thumbnail of standaardafbeelding
+// - Titel, uploader, weergaven en tijdstip
+// - Verwijderknop als $cardOwner op true staat
 $cardOwner       = $cardOwner ?? false;
 $uploaderName    = $card['uploader'] ?? '';
 $uploaderInitial = $uploaderName !== '' ? strtoupper(substr($uploaderName, 0, 1)) : '?';

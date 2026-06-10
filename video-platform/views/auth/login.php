@@ -1,8 +1,8 @@
 <?php
-// login.php - Inlogpagina
-// Toont het inlogformulier (e-mail + wachtwoord) in een gecentreerde kaart.
-// $hideNav = true verbergt de navbar/footer voor een schone auth-look.
-// Bij submit verwerkt AuthController de gegevens; bij fout staat $error gevuld.
+// login.php - View voor de loginpagina
+// Toont het loginformulier met e-mail en wachtwoordveld
+// Geeft een foutmelding als de inlogpoging mislukt
+$error     = $error ?? '';
 $pageTitle = 'Inloggen';
 $hideNav   = true;
 require VIEWS_PATH . '/partials/header.php';

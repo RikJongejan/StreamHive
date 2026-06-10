@@ -1,21 +1,16 @@
 <?php
-// index.php (public) - Het startpunt van de hele applicatie (front controller)
-// Dit is het ENIGE bestand dat de browser rechtstreeks aanroept.
-// Alle verkeer loopt via ?route=... en wordt door de Router naar de juiste controller gestuurd.
-// Stappen:
-//   1. Sessie starten en config/helpers laden
-//   2. Autoloader registreren zodat classes vanzelf ingeladen worden
-//   3. Databaseverbinding maken
-//   4. Routes registreren
-//   5. De gevraagde route afhandelen
-
+// index.php - Front controller en enige toegangspunt van de applicatie
+// Bootstrapt de applicatie:
+// - Start sessie en laadt configuratie, helpers en auth
+// - Registreert de autoloader voor core/, models/, services/ en controllers/
+// - Legt alle routes vast en koppelt ze aan controllers
+// - Bepaalt welke route verwerkt wordt op basis van ?route= in de URL
 session_start();
 
 require_once __DIR__ . '/../app/config/app.php';
 require_once __DIR__ . '/../includes/helpers.php';
 require_once __DIR__ . '/../includes/auth.php';
 
-// Laadt classes automatisch in op basis van hun naam (bestandsnaam == classnaam)
 spl_autoload_register(function (string $class): void {
     $folders = [
         __DIR__ . '/../core/',
@@ -36,7 +31,6 @@ spl_autoload_register(function (string $class): void {
 $pdo    = Database::getConnection();
 $router = new Router($pdo);
 
-// Routes: route-naam => controller + methode
 $router->add('auth/login',    'AuthController',    'login');
 $router->add('auth/register', 'AuthController',    'register');
 $router->add('auth/logout',   'AuthController',    'logout');

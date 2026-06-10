@@ -1,7 +1,7 @@
 <?php
-// footer.php - Onderste gedeelte van elke pagina
-// Sluit de body en html en laadt main.js in.
-// De footerbalk wordt verborgen op de auth-pagina's ($hideNav waar).
+// footer.php - Gedeelde paginafooter
+// Sluit de HTML af en laadt scripts:
+// - Toont de sitewide footer tenzij $hideNav op true staat
 $hideNav = $hideNav ?? false;
 ?>
     <?php if (!$hideNav): ?>

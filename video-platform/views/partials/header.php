@@ -1,9 +1,7 @@
 <?php
-// header.php - Bovenste gedeelte van elke pagina
-// Wordt bovenaan elke view geladen met require.
-// Bevat DOCTYPE, head (CSS + Font Awesome), opent de body en tekent de
-// vliegende bijen op de achtergrond. Laadt de navbar in, tenzij $hideNav waar is.
-// De view kan vooraf $pageTitle en $hideNav zetten.
+// header.php - Gedeelde paginaheader
+// Bevat de HTML-opening, metatags, CSS-links en de navigatiebalk:
+// - Laadt de navbar tenzij $hideNav op true staat (bijv. op auth-pagina's)
 $pageTitle = $pageTitle ?? SITE_NAME;
 $hideNav   = $hideNav ?? false;
 ?>

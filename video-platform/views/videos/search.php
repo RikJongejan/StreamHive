@@ -1,7 +1,10 @@
 <?php
-// search.php - Zoekresultatenpagina
-// Toont video's die overeenkomen met de zoekopdracht in hetzelfde grid als de homepage.
-// Data komt binnen via VideoController als $videos array en $query string.
+// search.php - View voor de zoekresultatenpagina
+// Toont de zoekresultaten voor een opgegeven zoekopdracht:
+// - Resultaten als videokaarten in een grid
+// - Lege toestand als er niets gevonden is
+$videos    = $videos ?? [];
+$query     = $query  ?? '';
 $pageTitle = 'Zoeken';
 require VIEWS_PATH . '/partials/header.php';
 ?>

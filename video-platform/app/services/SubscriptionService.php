@@ -1,10 +1,10 @@
 <?php
-// SubscriptionService.php - Logica laag voor abonnementen
-// Regelt het toggling van abonnementen:
-// - Al geabonneerd? Dan opzeggen
-// - Nog niet geabonneerd? Dan abonneren
-// - Je kan jezelf niet abonneren op jezelf
-
+// SubscriptionService.php - Service voor abonnementen tussen gebruikers
+// Bevat de bedrijfslogica voor het volgen van kanalen:
+// - Abonnement toggling (abonneren of opzeggen)
+// - Controleren of een gebruiker al geabonneerd is
+// - Abonneeaantal ophalen
+// - Lijsten van abonnees en abonnementen ophalen
 class SubscriptionService
 {
     private SubscriptionModel $subscriptionModel;

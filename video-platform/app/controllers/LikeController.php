@@ -1,9 +1,8 @@
 <?php
-// LikeController.php - Regelt likes op video's
-// Verantwoordelijk voor:
-// - Like toevoegen of verwijderen als gebruiker op de knop klikt (toggle)
-// De controller verwerkt de request en roept LikeService aan voor de logica.
-
+// LikeController.php - Controller voor likes op video's
+// Verwerkt het liken en unliken van video's:
+// - Like toggling via POST
+// - Doorverwijzen naar de videopagina na actie
 class LikeController
 {
     private LikeService $likeService;

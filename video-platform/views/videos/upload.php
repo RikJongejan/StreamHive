@@ -1,8 +1,11 @@
 <?php
-// upload.php - Pagina voor het uploaden van een video
-// Formulier met: titel, beschrijving, videobestand, thumbnail en categorieen.
-// Bestaande categorieen als chips (checkboxes), nieuwe als komma-gescheiden tekst.
-// Bij submit verwerkt VideoController het bestand en koppelt CategoryService de categorieen.
+// upload.php - View voor het uploadformulier
+// Toont het formulier voor het uploaden van een nieuwe video:
+// - Titel, beschrijving en videobestand
+// - Optionele thumbnail
+// - Categorieën aanvinken of nieuwe aanmaken
+$categories = $categories ?? [];
+$error      = $error      ?? '';
 $pageTitle = 'Uploaden';
 require VIEWS_PATH . '/partials/header.php';
 ?>

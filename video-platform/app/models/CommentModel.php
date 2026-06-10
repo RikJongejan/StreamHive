@@ -1,11 +1,10 @@
 <?php
-// CommentModel.php - Model voor reacties op videos
+// CommentModel.php - Model voor reacties op video's
 // Beheert alle commentaren van gebruikers:
 // - Reactie plaatsen onder een video
 // - Reactie verwijderen
-// - Reactie aanpassen met edit()
+// - Reacties ophalen inclusief gebruikersnaam (via JOIN)
 // Werkt met de 'comments' tabel in de database
-
 class CommentModel
 {
     private PDO $pdo;

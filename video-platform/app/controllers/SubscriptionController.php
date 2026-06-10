@@ -1,9 +1,8 @@
 <?php
-// SubscriptionController.php - Regelt abonnementen
-// Verantwoordelijk voor:
-// - Abonneren of opzeggen als gebruiker op de knop klikt (toggle)
-// De controller verwerkt de request en roept SubscriptionService aan voor de logica.
-
+// SubscriptionController.php - Controller voor abonnementen
+// Verwerkt het abonneren en opzeggen op kanalen:
+// - Abonnement toggling via POST
+// - Doorverwijzen naar videopagina of profielpagina na actie
 class SubscriptionController
 {
     private SubscriptionService $subscriptionService;

@@ -1,11 +1,9 @@
 <?php
-// AuthService.php - Logica laag voor authenticatie
-// Bevat alle regels rondom in- en uitloggen en registreren:
-// - Velden controleren (validatie)
-// - Wachtwoorden vergelijken (via het model)
-// - Nieuwe gebruikers aanmaken
-// De controller roept deze service aan en houdt zich alleen met de request bezig.
-
+// AuthService.php - Service voor authenticatielogica
+// Bevat de bedrijfslogica voor inloggen en registreren:
+// - Validatie van invoer (lege velden, wachtwoordlengte, overeenkomst)
+// - Inloggen via het UserModel
+// - Registreren en direct inloggen na aanmaken account
 class AuthService
 {
     private UserModel $userModel;
@@ -31,13 +29,13 @@ class AuthService
         return ['success' => true, 'user' => $user];
     }
 
-    public function register(string $email, string $username, string $password, string $confirm): array
+    public function register(string $email, string $username, string $password, string $confirmPassword): array
     {
-        if (empty($email) || empty($username) || empty($password) || empty($confirm)) {
+        if (empty($email) || empty($username) || empty($password) || empty($confirmPassword)) {
             return ['success' => false, 'error' => 'Fill in all the fields.'];
         }
 
-        if ($password !== $confirm) {
+        if ($password !== $confirmPassword) {
             return ['success' => false, 'error' => 'Passwords do not match.'];
         }
 

@@ -1,9 +1,11 @@
 <?php
-// navbar.php - Navigatiebalk die op elke ingelogde pagina zichtbaar is
-// Toont: logo, zoekbalk, en links naar home, upload, profiel en uitloggen.
-// Bij niet-ingelogd (zelden, want pagina's vereisen login) tonen we login/registreer.
-$navUser = $_SESSION['username'] ?? '';
-$navInitial = $navUser !== '' ? strtoupper(substr($navUser, 0, 1)) : '?';
+// navbar.php - Navigatiebalk
+// Toont de navigatiebalk bovenaan elke pagina:
+// - Logo, zoekbalk en navigatielinks
+// - Avatar met initiaal voor ingelogde gebruiker
+// - Login- en registratielinks voor uitgelogde bezoekers
+$navUsername        = $_SESSION['username'] ?? '';
+$navUsernameInitial = $navUsername !== '' ? strtoupper(substr($navUsername, 0, 1)) : '?';
 ?>
 <nav class="nav">
     <div class="container">
@@ -27,7 +29,7 @@ $navInitial = $navUser !== '' ? strtoupper(substr($navUser, 0, 1)) : '?';
                 <a class="nav-link" href="<?= route('video/index') ?>"><i class="fa-solid fa-house"></i> Home</a>
                 <a class="nav-link" href="<?= route('video/upload') ?>"><i class="fa-solid fa-cloud-arrow-up"></i> Upload</a>
                 <a class="nav-link" href="<?= route('auth/logout') ?>"><i class="fa-solid fa-right-from-bracket"></i> Uitloggen</a>
-                <a class="nav-avatar" href="<?= route('user/profile') ?>" title="Mijn kanaal (<?= htmlspecialchars($navUser) ?>)"><?= htmlspecialchars($navInitial) ?></a>
+                <a class="nav-avatar" href="<?= route('user/profile') ?>" title="Mijn kanaal (<?= htmlspecialchars($navUsername) ?>)"><?= htmlspecialchars($navUsernameInitial) ?></a>
             <?php else: ?>
                 <a class="nav-link" href="<?= route('auth/login') ?>">Inloggen</a>
                 <a class="btn btn-honey" href="<?= route('auth/register') ?>">Registreren</a>

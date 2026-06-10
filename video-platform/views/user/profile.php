@@ -1,11 +1,17 @@
 <?php
-// profile.php - Profielpagina (kanaal) van een gebruiker
-// Toont: avatar, naam, bio, statistieken en tabbladen met video's en abonnees.
-// Op het eigen kanaal verschijnt ook een tab "Abonnementen" en verwijderknoppen.
-// Data komt binnen via UserController:
-//   $profileUser, $isOwn, $videos, $subscriberCount, $subscribers,
-//   $userSubscribed, $subscriptions
-$avatarInitial = strtoupper(substr($profileUser['username'], 0, 1));
+// profile.php - View voor de profielpagina van een gebruiker
+// Toont het kanaaloverzicht met:
+// - Profielbanner met avatar, gebruikersnaam, bio en statistieken
+// - Tabbladen voor video's, abonnees en abonnementen
+// - Abonneerknop voor andere gebruikers, bewerkknop voor eigenaar
+$profileUser     = $profileUser     ?? [];
+$isOwn           = $isOwn           ?? false;
+$videos          = $videos          ?? [];
+$subscriberCount = $subscriberCount ?? 0;
+$subscribers     = $subscribers     ?? [];
+$userSubscribed  = $userSubscribed  ?? false;
+$subscriptions   = $subscriptions   ?? [];
+$avatarInitial   = $avatarInitial   ?? '?';
 require VIEWS_PATH . '/partials/header.php';
 ?>
 
@@ -90,11 +96,11 @@ require VIEWS_PATH . '/partials/header.php';
                 <p style="color:var(--text-mute);padding:20px 0;">Nog geen abonnees.</p>
             <?php else: ?>
                 <div class="sub-list">
-                    <?php foreach ($subscribers as $sub): ?>
-                        <a class="sub-chip" href="<?= route('user/profile', ['id' => $sub['id']]) ?>">
-                            <span class="avatar-mini"><?= htmlspecialchars(strtoupper(substr($sub['username'], 0, 1))) ?></span>
+                    <?php foreach ($subscribers as $subscriber): ?>
+                        <a class="sub-chip" href="<?= route('user/profile', ['id' => $subscriber['id']]) ?>">
+                            <span class="avatar-mini"><?= htmlspecialchars(strtoupper(substr($subscriber['username'], 0, 1))) ?></span>
                             <div>
-                                <b><?= htmlspecialchars($sub['username']) ?></b><br>
+                                <b><?= htmlspecialchars($subscriber['username']) ?></b><br>
                                 <span>Bekijk kanaal</span>
                             </div>
                         </a>
@@ -110,11 +116,11 @@ require VIEWS_PATH . '/partials/header.php';
                     <p style="color:var(--text-mute);padding:20px 0;">Je bent nog nergens op geabonneerd.</p>
                 <?php else: ?>
                     <div class="sub-list">
-                        <?php foreach ($subscriptions as $sub): ?>
-                            <a class="sub-chip" href="<?= route('user/profile', ['id' => $sub['id']]) ?>">
-                                <span class="avatar-mini"><?= htmlspecialchars(strtoupper(substr($sub['username'], 0, 1))) ?></span>
+                        <?php foreach ($subscriptions as $followedChannel): ?>
+                            <a class="sub-chip" href="<?= route('user/profile', ['id' => $followedChannel['id']]) ?>">
+                                <span class="avatar-mini"><?= htmlspecialchars(strtoupper(substr($followedChannel['username'], 0, 1))) ?></span>
                                 <div>
-                                    <b><?= htmlspecialchars($sub['username']) ?></b><br>
+                                    <b><?= htmlspecialchars($followedChannel['username']) ?></b><br>
                                     <span>Bekijk kanaal</span>
                                 </div>
                             </a>

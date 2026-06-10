@@ -1,11 +1,9 @@
 <?php
-// UserController.php - Regelt alles rondom gebruikersprofielen
-// Verantwoordelijk voor:
-// - profile():  een kanaal tonen (eigen of dat van iemand anders) met video's en abonnees
-// - settings(): het instellingenformulier tonen (alleen eigen account)
-// - update():   het profiel opslaan (naam, bio, avatar)
-// De controller verwerkt de request en roept de services aan voor de logica.
-
+// UserController.php - Controller voor gebruikersprofielen en instellingen
+// Beheert alle gebruikersgerelateerde pagina's en acties:
+// - Profielpagina van een gebruiker weergeven (profile)
+// - Instellingenpagina weergeven (settings)
+// - Profielwijzigingen opslaan inclusief avatar-upload (update)
 class UserController
 {
     private UserService $userService;
@@ -41,6 +39,7 @@ class UserController
         $userSubscribed  = $this->subscriptionService->isSubscribed($currentId, $profileId);
         // Eigen kanaal toont ook op wie jij geabonneerd bent
         $subscriptions   = $isOwn ? $this->subscriptionService->getSubscriptions($profileId) : [];
+        $avatarInitial   = strtoupper(substr($profileUser['username'], 0, 1));
 
         $pageTitle = $profileUser['username'];
         require VIEWS_PATH . '/user/profile.php';
@@ -50,8 +49,9 @@ class UserController
     {
         requireLogin();
 
-        $user  = $this->userService->getProfile((int) $_SESSION['user_id']);
-        $error = '';
+        $user          = $this->userService->getProfile((int) $_SESSION['user_id']);
+        $error         = '';
+        $avatarInitial = strtoupper(substr($user['username'], 0, 1));
 
         $pageTitle = 'Instellingen';
         require VIEWS_PATH . '/user/settings.php';
@@ -79,9 +79,10 @@ class UserController
                 redirect(route('user/profile'));
             }
 
-            $error     = $result['error'];
-            $user      = $current;
-            $pageTitle = 'Instellingen';
+            $error         = $result['error'];
+            $user          = $current;
+            $avatarInitial = strtoupper(substr($user['username'], 0, 1));
+            $pageTitle     = 'Instellingen';
             require VIEWS_PATH . '/user/settings.php';
             return;
         }

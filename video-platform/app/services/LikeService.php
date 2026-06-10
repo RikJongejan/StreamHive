@@ -1,10 +1,9 @@
 <?php
-// LikeService.php - Logica laag voor likes
-// Regelt het toggling van likes op video's:
-// - Als de gebruiker nog niet geliked heeft: like toevoegen
-// - Als de gebruiker al geliked heeft: like verwijderen
-// De controller roept toggle() aan en hoeft niet zelf te checken.
-
+// LikeService.php - Service voor likes op video's
+// Bevat de bedrijfslogica voor het liken van video's:
+// - Like toggling (liken als nog niet geliket, unliken als al geliket)
+// - Aantal likes ophalen
+// - Controleren of een gebruiker een video al geliket heeft
 class LikeService
 {
     private LikeModel $likeModel;

@@ -1,9 +1,12 @@
 <?php
-// helpers.php - Kleine hulpfuncties die overal gebruikt worden
-// route($path, $params): bouwt een URL naar de front controller (?route=...)
-// redirect($url): stuur gebruiker door naar een andere pagina
-// sanitize($input): verwijder gevaarlijke tekens uit gebruikersinvoer
-// setUserSession($user): sla gebruikersdata op in de sessie
+// helpers.php - Algemene hulpfuncties voor de hele applicatie
+// Bevat globale hulpfuncties die overal in de applicatie gebruikt worden:
+// - route(): URL bouwen naar de front controller
+// - redirect(): doorverwijzen naar een URL
+// - sanitize(): invoer opschonen met htmlspecialchars
+// - setUserSession(): sessievariabelen instellen na inloggen of registreren
+// - timeAgo(): datum omzetten naar "x geleden" tekst
+// - formatCount(): getal omzetten naar leesbare notatie (1,2k / 3,4M)
 
 // Bouwt een nette URL naar de front controller, bijv. route('video/show', ['id' => 5])
 function route(string $path = '', array $params = []): string

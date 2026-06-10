@@ -1,10 +1,10 @@
 <?php
-// CategoryModel.php - Model voor categorieen van videos
-// Beheert de categories tabel en de video_category koppeltabel:
-// - Alle categorieen ophalen voor checkboxes in het uploadformulier
-// - Categorie zoeken op naam of aanmaken als hij nog niet bestaat
-// - Categorie koppelen aan een video via de koppeltabel (N:N)
-
+// CategoryModel.php - Model voor video categorieën
+// Beheert alle categoriegerelateerde databaseoperaties:
+// - Alle categorieën ophalen
+// - Categorie zoeken of aanmaken (findOrCreate)
+// - Categorie koppelen aan of ontkoppelen van een video
+// Werkt met de 'categories' en 'video_category' tabellen in de database
 class CategoryModel
 {
     private PDO $pdo;

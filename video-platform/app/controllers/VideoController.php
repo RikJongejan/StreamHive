@@ -1,11 +1,11 @@
 <?php
-// VideoController.php - Regelt alles rondom video's
-// Verantwoordelijk voor:
-// - Lijst van alle video's tonen (homepagina)
-// - Een specifieke video tonen met reacties
-// - Video uploaden
-// De controller verwerkt de request en roept VideoService en CommentService aan.
-
+// VideoController.php - Controller voor video's
+// Beheert alle video-gerelateerde pagina's en acties:
+// - Overzichtspagina met optioneel categoriefilter (index)
+// - Videopagina met reacties, likes en aanbevelingen (show)
+// - Zoekpagina (search)
+// - Uploadformulier en verwerking (upload)
+// - Video verwijderen (delete)
 class VideoController
 {
     private VideoService $videoService;
@@ -28,11 +28,11 @@ class VideoController
         requireLogin();
 
         // Optioneel filteren op categorie via ?cat=ID; anders alle video's
-        $categories = $this->categoryService->getAllCategories();
-        $activeCat  = (int) ($_GET['cat'] ?? 0);
+        $categories     = $this->categoryService->getAllCategories();
+        $activeCategory = (int) ($_GET['cat'] ?? 0);
 
-        $videos = $activeCat > 0
-            ? $this->videoService->getVideosByCategory($activeCat)
+        $videos = $activeCategory > 0
+            ? $this->videoService->getVideosByCategory($activeCategory)
             : $this->videoService->getAllVideos();
 
         require VIEWS_PATH . '/videos/index.php';
@@ -65,6 +65,12 @@ class VideoController
         $categories      = $this->categoryService->getAllCategories();
         $videoCategories = array_column($this->videoService->getCategoriesForVideo($id), 'id');
         $recommended     = $this->videoService->getRecommended($id);
+
+        $uploaderName    = $video['uploader'] ?? '';
+        $uploaderInitial = $uploaderName !== '' ? strtoupper(substr($uploaderName, 0, 1)) : '?';
+        $isOwnVideo      = (int) $video['user_id'] === (int) $_SESSION['user_id'];
+        $myInitial       = strtoupper(substr($_SESSION['username'] ?? '?', 0, 1));
+
         require VIEWS_PATH . '/videos/show.php';
     }
 

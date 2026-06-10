@@ -1,11 +1,4 @@
 <?php
-// app.php - Algemene instellingen van de applicatie
-// Stelt constanten in die overal beschikbaar zijn:
-// - SITE_NAME: naam van de site
-// - BASE_URL:  het enige ingangspunt (front controller) waar alle routes langs gaan
-// - UPLOADS_URL/UPLOADS_PATH: locatie van geuploade bestanden (web + schijf)
-// - VIEWS_PATH: map waar de view-bestanden staan
-
 define('SITE_NAME', 'StreamHive');
 
 // Front controller: elke pagina wordt aangeroepen via ?route=...

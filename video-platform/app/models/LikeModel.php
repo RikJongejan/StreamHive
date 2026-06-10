@@ -1,12 +1,10 @@
 <?php
 // LikeModel.php - Model voor likes op video's
-// Bijhoudt welke gebruiker welke video heeft geliked:
-// - Like toevoegen met add()
-// - Like verwijderen met remove()
-// - Controleren of gebruiker al geliked heeft met hasLiked()
-// - Totaal aantal likes voor een video ophalen met countForVideo()
+// Beheert het liken en unliken van video's:
+// - Like toevoegen of verwijderen
+// - Controleren of een gebruiker een video al geliket heeft
+// - Totaal aantal likes per video ophalen
 // Werkt met de 'likes' tabel in de database
-
 class LikeModel
 {
     private PDO $pdo;

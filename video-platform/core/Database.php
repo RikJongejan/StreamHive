@@ -1,9 +1,9 @@
 <?php
-// Database.php - Zet de databaseverbinding op via PDO
-// Gebruikt het singleton-patroon: er is maar EEN verbinding voor de hele request.
-// De inloggegevens komen uit app/config/database.php
-// Aanroepen met: Database::getConnection()
-
+// Database.php - PDO singleton voor de databaseverbinding
+// Zorgt ervoor dat er maar één verbinding per request bestaat:
+// - Laadt configuratie uit app/config/database.php
+// - Bouwt een PDO-instantie met foutmeldingen en FETCH_ASSOC als standaard
+// - Hergebruikt de bestaande verbinding bij elke aanroep
 class Database
 {
     private static ?PDO $connection = null;

@@ -1,11 +1,9 @@
 <?php
-// AuthController.php - Regelt alles rondom authenticatie
-// Verantwoordelijk voor:
-// - Inlogformulier verwerken
-// - Registratieformulier verwerken
-// - Uitloggen (sessie vernietigen)
-// De controller verwerkt alleen de request en roept AuthService aan voor de logica.
-
+// AuthController.php - Controller voor authenticatie
+// Beheert inloggen, registreren en uitloggen:
+// - Loginformulier weergeven en verwerken (login)
+// - Registratieformulier weergeven en verwerken (register)
+// - Sessie beëindigen en doorverwijzen (logout)
 class AuthController
 {
     private AuthService $authService;
@@ -41,12 +39,12 @@ class AuthController
         $error = '';
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $email    = trim($_POST['email'] ?? '');
-            $username = trim($_POST['username'] ?? '');
-            $password = $_POST['password'] ?? '';
-            $confirm  = $_POST['confirm_password'] ?? '';
+            $email           = trim($_POST['email'] ?? '');
+            $username        = trim($_POST['username'] ?? '');
+            $password        = $_POST['password'] ?? '';
+            $confirmPassword = $_POST['confirm_password'] ?? '';
 
-            $result = $this->authService->register($email, $username, $password, $confirm);
+            $result = $this->authService->register($email, $username, $password, $confirmPassword);
 
             if ($result['success']) {
                 setUserSession($result['user']);

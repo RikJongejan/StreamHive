@@ -1,16 +1,24 @@
 <?php
-// show.php - Pagina voor het bekijken van één video (YouTube-stijl)
-// Links: de speler, daaronder titel, uploader, knoppen, beschrijving en reacties.
-// Rechts: een lijst met aanbevolen video's.
-// Alle data komt binnen via VideoController.
-$pageTitle = $video['title'];
-
-$currentId       = (int) $_SESSION['user_id'];
-$isOwnVideo      = (int) $video['user_id'] === $currentId;
-$uploaderName    = $video['uploader'] ?? '';
-$uploaderInitial = $uploaderName !== '' ? strtoupper(substr($uploaderName, 0, 1)) : '?';
-$myInitial       = strtoupper(substr($_SESSION['username'] ?? '?', 0, 1));
-
+// show.php - View voor de videopagina
+// Toont een volledige videopagina met:
+// - Videospeler en metadata (titel, uploader, weergaven, likes)
+// - Abonneerknop en verwijderknop voor eigen video's
+// - Reactiesectie met plaatsformulier
+// - Aanbevolen video's in de zijbalk
+$video           = $video           ?? [];
+$comments        = $comments        ?? [];
+$likeCount       = $likeCount       ?? 0;
+$userLiked       = $userLiked       ?? false;
+$subscriberCount = $subscriberCount ?? 0;
+$userSubscribed  = $userSubscribed  ?? false;
+$categories      = $categories      ?? [];
+$videoCategories = $videoCategories ?? [];
+$recommended     = $recommended     ?? [];
+$uploaderName    = $uploaderName    ?? '';
+$uploaderInitial = $uploaderInitial ?? '?';
+$isOwnVideo      = $isOwnVideo      ?? false;
+$myInitial       = $myInitial       ?? '?';
+$pageTitle = $video['title'] ?? '';
 require VIEWS_PATH . '/partials/header.php';
 ?>
 
@@ -114,9 +122,9 @@ require VIEWS_PATH . '/partials/header.php';
                         <p style="color: var(--text-mute);">Nog geen reacties. Wees de eerste!</p>
                     <?php else: ?>
                         <?php foreach ($comments as $comment): ?>
-                            <?php $cInitial = strtoupper(substr($comment['username'] ?? '?', 0, 1)); ?>
+                            <?php $commentInitial = strtoupper(substr($comment['username'] ?? '?', 0, 1)); ?>
                             <div class="comment">
-                                <span class="avatar-mini"><?= htmlspecialchars($cInitial) ?></span>
+                                <span class="avatar-mini"><?= htmlspecialchars($commentInitial) ?></span>
                                 <div>
                                     <div class="c-head">
                                         <span class="c-name"><?= htmlspecialchars($comment['username']) ?></span>

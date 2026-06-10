@@ -1,9 +1,12 @@
 <?php
-// settings.php - Instellingenpagina van de ingelogde gebruiker
-// Hier past de gebruiker zijn naam, bio en avatar aan.
-// Alleen toegankelijk voor de eigenaar; submit gaat naar UserController::update().
-// Data komt binnen als $user (en bij een fout $error).
-$avatarInitial = strtoupper(substr($user['username'], 0, 1));
+// settings.php - View voor de instellingenpagina
+// Toont het formulier voor het bewerken van:
+// - Gebruikersnaam en bio
+// - Profielfoto (avatar) uploaden
+// Geeft een foutmelding als het opslaan mislukt
+$user          = $user          ?? [];
+$error         = $error         ?? '';
+$avatarInitial = $avatarInitial ?? '?';
 require VIEWS_PATH . '/partials/header.php';
 ?>
 

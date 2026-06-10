@@ -1,8 +1,8 @@
 <?php
-// auth.php - Hulpfuncties voor authenticatie
-// isLoggedIn(): geeft true terug als gebruiker ingelogd is
-// requireLogin(): stuurt niet-ingelogde gebruiker naar de loginpagina
-
+// auth.php - Authenticatiehulpfuncties
+// Bevat hulpfuncties voor sessiecontrole:
+// - Controleren of een gebruiker ingelogd is (isLoggedIn)
+// - Toegang weigeren en doorverwijzen naar login als niet ingelogd (requireLogin)
 function isLoggedIn(): bool
 {
     return isset($_SESSION['user_id']);

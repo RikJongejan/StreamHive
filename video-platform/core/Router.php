@@ -1,11 +1,9 @@
 <?php
-// Router.php - Koppelt een route (bijv. "video/show") aan een controller en methode
-// Werkwijze:
-// - In public/index.php worden alle routes geregistreerd met add()
-// - dispatch() zoekt de juiste controller op, maakt hem aan en roept de methode aan
-// - Bestaat de route niet, dan volgt een 404
-// De controller krijgt de PDO-verbinding mee in zijn constructor.
-
+// Router.php - Front controller router
+// Koppelt route-strings aan controller-methoden:
+// - Routes registreren via add()
+// - Route verwerken en bijbehorende controller instantiëren via dispatch()
+// - 404 terugsturen als de route niet bekend is
 class Router
 {
     private PDO $pdo;

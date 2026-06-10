@@ -1,9 +1,9 @@
 <?php
-// CategoryService.php - Logica laag voor categorieen
-// Regelt het koppelen van categorieen aan videos:
-// - Bestaande categorieen ophalen voor het uploadformulier
-// - Geselecteerde en nieuwe categorieen opslaan en koppelen aan een video
-
+// CategoryService.php - Service voor videocategorieën
+// Bevat de bedrijfslogica voor categorieën:
+// - Alle categorieën ophalen
+// - Categorieën opslaan na een video-upload
+//   (bestaande aanvinken + nieuwe aanmaken via komma-gescheiden invoer)
 class CategoryService
 {
     private CategoryModel $categoryModel;

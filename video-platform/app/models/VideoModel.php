@@ -1,12 +1,12 @@
 <?php
-// VideoModel.php - Model voor videos
-// Bevat alle logica rondom videos:
+// VideoModel.php - Model voor video's
+// Beheert alle video-gerelateerde databaseoperaties:
+// - Video's ophalen (alles, per gebruiker, per categorie, op id)
 // - Video uploaden en verwijderen
-// - Video ophalen op ID of gebruiker
-// - Weergaven bijhouden met incrementViews()
-// - Categorieen ophalen via getCategories()
-// Werkt met de 'videos' tabel in de database
-
+// - Weergaven bijhouden
+// - Zoeken in titel en beschrijving
+// - Categorieën ophalen via de video_category koppeltabel
+// Werkt met de 'videos' en 'video_category' tabellen in de database
 class VideoModel
 {
     private PDO $pdo;

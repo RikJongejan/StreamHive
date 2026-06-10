@@ -1,9 +1,8 @@
 <?php
-// CommentController.php - Regelt reacties op video's
-// Verantwoordelijk voor:
-// - Nieuwe reactie opslaan
-// De controller verwerkt de request en roept CommentService aan voor de logica.
-
+// CommentController.php - Controller voor reacties op video's
+// Verwerkt het plaatsen van reacties:
+// - Reactie opslaan via POST
+// - Doorverwijzen naar de videopagina na plaatsen
 class CommentController
 {
     private CommentService $commentService;
