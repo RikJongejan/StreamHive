@@ -8,7 +8,6 @@
 // - timeAgo(): datum omzetten naar "x geleden" tekst
 // - formatCount(): getal omzetten naar leesbare notatie (1,2k / 3,4M)
 
-// Bouwt een nette URL naar de front controller, bijv. route('video/show', ['id' => 5])
 function route(string $path = '', array $params = []): string
 {
     $url = BASE_URL . '?route=' . $path;
@@ -39,7 +38,6 @@ function setUserSession(array $user): void
     $_SESSION['role']     = $user['role'];
 }
 
-// Zet een datum/tijd om in een korte "x geleden" tekst voor in de views
 function timeAgo(string $datetime): string
 {
     $seconds = time() - strtotime($datetime);
@@ -60,7 +58,6 @@ function timeAgo(string $datetime): string
     }
 }
 
-// Maakt korte aantallen leesbaar (1200 -> 1,2k) voor weergaven en abonnees
 function formatCount(int $number): string
 {
     if ($number >= 1000000) {

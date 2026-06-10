@@ -20,8 +20,7 @@ class CategoryModel
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // Zoekt een categorie op naam. Bestaat hij nog niet, dan wordt hij aangemaakt.
-    // Geeft altijd het id terug zodat je hem direct kunt koppelen aan een video.
+    // Categorie aanmaken als die nog niet bestaat voorkomt dubbele rijen in de categorietabel
     public function findOrCreate(string $name): int
     {
         $stmt = $this->pdo->prepare("SELECT id FROM categories WHERE name = ?");

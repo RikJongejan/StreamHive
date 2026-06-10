@@ -42,7 +42,7 @@ class UserController
         $subscriberCount = $this->subscriptionService->getSubscriberCount($profileId);
         $subscribers     = $this->subscriptionService->getSubscribers($profileId);
         $userSubscribed  = $this->subscriptionService->isSubscribed($currentId, $profileId);
-        // Eigen kanaal toont ook op wie jij geabonneerd bent
+        // Abonnementen alleen ophalen voor de eigenaar zodat andere gebruikers dit niet kunnen inzien
         if ($isOwn) {
             $subscriptions = $this->subscriptionService->getSubscriptions($profileId);
         } else {

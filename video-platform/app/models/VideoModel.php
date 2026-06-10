@@ -16,7 +16,7 @@ class VideoModel
         $this->pdo = $pdo;
     }
 
-    // JOIN met users zodat de view direct de naam van de uploader heeft (kolom 'uploader')
+    // Uploadersnaam meejoinen voorkomt een extra query per video in de view
     public function getAll(): array
     {
         $stmt = $this->pdo->query("
@@ -73,14 +73,12 @@ class VideoModel
         return $stmt->execute([$id]);
     }
 
-    // Sessiecheck in de controller zorgt dat dezelfde gebruiker niet meerdere views kan geven bij refreshen
     public function incrementViews(int $id): bool
     {
         $stmt = $this->pdo->prepare("UPDATE videos SET views = views + 1 WHERE id = ?");
         return $stmt->execute([$id]);
     }
 
-    // Zoekt op titel en beschrijving met LIKE zodat beide velden doorzocht worden
     public function search(string $query): array
     {
         $term = '%' . $query . '%';
@@ -95,7 +93,6 @@ class VideoModel
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // Alle video's binnen één categorie (voor het filteren op de homepagina)
     public function getByCategory(int $categoryId): array
     {
         $stmt = $this->pdo->prepare("

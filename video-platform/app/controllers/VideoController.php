@@ -29,7 +29,6 @@ class VideoController
 
         $categories = $this->categoryService->getAllCategories();
 
-        // Optioneel filteren op categorie via ?cat=ID; anders alle video's
         if (isset($_GET['cat'])) {
             $activeCategory = (int) $_GET['cat'];
         } else {
@@ -168,7 +167,7 @@ class VideoController
         require VIEWS_PATH . '/videos/upload.php';
     }
 
-    // Verwijdert een eigen video. De service controleert het eigenaarschap.
+    // Eigenaarschapscontrole zit in de service zodat de controller geen bedrijfslogica bevat
     public function delete(): void
     {
         requireLogin();

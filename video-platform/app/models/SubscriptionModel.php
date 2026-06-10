@@ -48,7 +48,6 @@ class SubscriptionModel
         return (int) $count;
     }
 
-    // Lijst van gebruikers die deze leader volgen (voor op de profielpagina)
     public function getSubscribers(int $leaderId): array
     {
         $stmt = $this->pdo->prepare("
@@ -62,7 +61,6 @@ class SubscriptionModel
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // Lijst van gebruikers op wie deze gebruiker zelf geabonneerd is
     public function getSubscriptions(int $subscriberId): array
     {
         $stmt = $this->pdo->prepare("

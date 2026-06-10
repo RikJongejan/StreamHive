@@ -30,9 +30,7 @@ class VideoService
         return $this->videoModel->getByUser($userId);
     }
 
-    // Verwijdert een video, maar alleen als hij van de ingelogde gebruiker is.
-    // Ruimt ook de bestanden op schijf op. Gekoppelde rijen (likes, reacties,
-    // categorie-koppelingen) verdwijnen vanzelf door ON DELETE CASCADE.
+    // Bestanden op schijf handmatig verwijderen want ON DELETE CASCADE ruimt alleen de databaserijen op
     public function delete(int $videoId, int $userId): bool
     {
         $video = $this->videoModel->getById($videoId);
@@ -71,7 +69,6 @@ class VideoService
         return $this->videoModel->getByCategory($categoryId);
     }
 
-    // Andere video's om naast de huidige aan te bevelen (max $limit stuks)
     public function getRecommended(int $excludeId, int $limit = 12): array
     {
         $allVideos   = $this->videoModel->getAll();
@@ -100,7 +97,6 @@ class VideoService
         return $this->videoModel->incrementViews($id);
     }
 
-    // Valideert en slaat een upload op. Geeft array terug met 'success' en bij fout 'error'.
     public function upload(int $userId, string $title, string $description, ?array $videoFile, ?array $thumbnailFile): array
     {
         if (empty($title)) {

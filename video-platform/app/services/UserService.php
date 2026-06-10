@@ -17,7 +17,7 @@ class UserService
         return $this->userModel->getById($id);
     }
 
-    // $imageFile is het $_FILES-element van de avatar (mag null zijn als er niets wijzigt).
+    // Null betekent dat de gebruiker geen nieuwe avatar heeft gekozen; de huidige afbeelding blijft dan staan
     public function updateProfile(int $id, string $username, string $bio, ?array $imageFile, string $currentImage): array
     {
         if ($username === '') {

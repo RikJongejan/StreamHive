@@ -18,9 +18,6 @@ class CategoryService
         return $this->categoryModel->getAll();
     }
 
-    // Verwerkt de categorieen na een video-upload:
-    // - $selectedIds: bestaande categorieen die de gebruiker heeft aangevinkt
-    // - $newNames: komma-gescheiden string met nieuwe categorienamen
     public function saveForVideo(int $videoId, array $selectedIds, string $newNames): void
     {
         foreach ($selectedIds as $categoryId) {

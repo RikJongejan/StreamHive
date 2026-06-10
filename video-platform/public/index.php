@@ -49,7 +49,7 @@ $router->add('user/profile',  'UserController',    'profile');
 $router->add('user/settings', 'UserController',    'settings');
 $router->add('user/update',   'UserController',    'update');
 
-// Geen route opgegeven? Stuur naar het overzicht als je ingelogd bent, anders naar login.
+// Lege route direct oplossen zodat de router nooit een lege string hoeft te verwerken
 $route = $_GET['route'] ?? '';
 
 if ($route === '') {

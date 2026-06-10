@@ -13,7 +13,6 @@ class AuthService
         $this->userModel = new UserModel($pdo);
     }
 
-    // Geeft een array terug met 'success' en bij fout 'error', bij succes 'user'
     public function login(string $email, string $password): array
     {
         if (empty($email)) {
