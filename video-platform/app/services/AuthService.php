@@ -16,7 +16,11 @@ class AuthService
     // Geeft een array terug met 'success' en bij fout 'error', bij succes 'user'
     public function login(string $email, string $password): array
     {
-        if (empty($email) || empty($password)) {
+        if (empty($email)) {
+            return ['success' => false, 'error' => 'Fill in all the fields.'];
+        }
+
+        if (empty($password)) {
             return ['success' => false, 'error' => 'Fill in all the fields.'];
         }
 
@@ -31,7 +35,19 @@ class AuthService
 
     public function register(string $email, string $username, string $password, string $confirmPassword): array
     {
-        if (empty($email) || empty($username) || empty($password) || empty($confirmPassword)) {
+        if (empty($email)) {
+            return ['success' => false, 'error' => 'Fill in all the fields.'];
+        }
+
+        if (empty($username)) {
+            return ['success' => false, 'error' => 'Fill in all the fields.'];
+        }
+
+        if (empty($password)) {
+            return ['success' => false, 'error' => 'Fill in all the fields.'];
+        }
+
+        if (empty($confirmPassword)) {
             return ['success' => false, 'error' => 'Fill in all the fields.'];
         }
 
