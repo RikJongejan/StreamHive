@@ -37,11 +37,16 @@ class VideoService
     {
         $video = $this->videoModel->getById($videoId);
 
-        if (!$video || (int) $video['user_id'] !== $userId) {
+        if (!$video) {
+            return false;
+        }
+
+        if ((int) $video['user_id'] !== $userId) {
             return false;
         }
 
         $this->deleteFileIfExists(UPLOADS_PATH . '/videos/' . $video['filename']);
+
         if (!empty($video['thumbnail'])) {
             $this->deleteFileIfExists(UPLOADS_PATH . '/thumbnails/' . $video['thumbnail']);
         }
@@ -69,12 +74,20 @@ class VideoService
     // Andere video's om naast de huidige aan te bevelen (max $limit stuks)
     public function getRecommended(int $excludeId, int $limit = 12): array
     {
-        $others = array_values(array_filter(
-            $this->videoModel->getAll(),
-            fn($v) => (int) $v['id'] !== $excludeId
-        ));
+        $allVideos   = $this->videoModel->getAll();
+        $recommended = [];
 
-        return array_slice($others, 0, $limit);
+        foreach ($allVideos as $video) {
+            if ((int) $video['id'] !== $excludeId) {
+                $recommended[] = $video;
+            }
+
+            if (count($recommended) >= $limit) {
+                break;
+            }
+        }
+
+        return $recommended;
     }
 
     public function search(string $query): array
@@ -94,7 +107,11 @@ class VideoService
             return ['success' => false, 'error' => 'Title is required.'];
         }
 
-        if ($videoFile === null || $videoFile['error'] !== UPLOAD_ERR_OK) {
+        if ($videoFile === null) {
+            return ['success' => false, 'error' => 'Video file is required.'];
+        }
+
+        if ($videoFile['error'] !== UPLOAD_ERR_OK) {
             return ['success' => false, 'error' => 'Video file is required.'];
         }
 
@@ -102,21 +119,31 @@ class VideoService
             return ['success' => false, 'error' => 'Video is too large (max 500MB).'];
         }
 
-        if (!in_array(mime_content_type($videoFile['tmp_name']), ['video/mp4', 'video/webm', 'video/ogg'])) {
+        $allowedVideoTypes = ['video/mp4', 'video/webm', 'video/ogg'];
+        $videoType         = mime_content_type($videoFile['tmp_name']);
+        $videoTypeAllowed  = in_array($videoType, $allowedVideoTypes);
+
+        if ($videoTypeAllowed === false) {
             return ['success' => false, 'error' => 'Only MP4, WebM or OGG is allowed.'];
         }
 
         // Thumbnail is optioneel, maar als hij er is moet het een geldige afbeelding zijn
         $thumbnailName = '';
 
-        if ($thumbnailFile !== null && $thumbnailFile['error'] === UPLOAD_ERR_OK) {
-            if (!in_array(mime_content_type($thumbnailFile['tmp_name']), ['image/jpeg', 'image/png', 'image/webp'])) {
-                return ['success' => false, 'error' => 'Thumbnail must be JPG, PNG or WebP.'];
-            }
+        if ($thumbnailFile !== null) {
+            if ($thumbnailFile['error'] === UPLOAD_ERR_OK) {
+                $allowedImageTypes = ['image/jpeg', 'image/png', 'image/webp'];
+                $thumbType         = mime_content_type($thumbnailFile['tmp_name']);
+                $thumbTypeAllowed  = in_array($thumbType, $allowedImageTypes);
 
-            $imageExtension = pathinfo($thumbnailFile['name'], PATHINFO_EXTENSION);
-            $thumbnailName  = uniqid('thumb_', true) . '.' . $imageExtension;
-            move_uploaded_file($thumbnailFile['tmp_name'], UPLOADS_PATH . '/thumbnails/' . $thumbnailName);
+                if ($thumbTypeAllowed === false) {
+                    return ['success' => false, 'error' => 'Thumbnail must be JPG, PNG or WebP.'];
+                }
+
+                $imageExtension = pathinfo($thumbnailFile['name'], PATHINFO_EXTENSION);
+                $thumbnailName  = uniqid('thumb_', true) . '.' . $imageExtension;
+                move_uploaded_file($thumbnailFile['tmp_name'], UPLOADS_PATH . '/thumbnails/' . $thumbnailName);
+            }
         }
 
         $videoExtension = pathinfo($videoFile['name'], PATHINFO_EXTENSION);
