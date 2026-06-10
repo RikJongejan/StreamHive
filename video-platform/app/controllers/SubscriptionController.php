@@ -16,8 +16,17 @@ class SubscriptionController
     {
         requireLogin();
 
-        $leaderId = (int) ($_POST['leader_id'] ?? 0);
-        $videoId  = (int) ($_POST['video_id'] ?? 0);
+        if (isset($_POST['leader_id'])) {
+            $leaderId = (int) $_POST['leader_id'];
+        } else {
+            $leaderId = 0;
+        }
+
+        if (isset($_POST['video_id'])) {
+            $videoId = (int) $_POST['video_id'];
+        } else {
+            $videoId = 0;
+        }
 
         if ($leaderId > 0) {
             $this->subscriptionService->toggle((int) $_SESSION['user_id'], $leaderId);
