@@ -25,9 +25,9 @@ $uploaderInitial = $uploaderName !== '' ? strtoupper(substr($uploaderName, 0, 1)
         <?php if ($cardOwner): ?>
             <div class="owner-actions">
                 <form method="POST" action="<?= route('video/delete') ?>"
-                      data-confirm="Weet je zeker dat je deze video wilt verwijderen?">
+                      data-confirm="Are you sure you want to delete this video?">
                     <input type="hidden" name="video_id" value="<?= $card['id'] ?>">
-                    <button type="submit" class="icon-btn danger" title="Verwijderen">
+                    <button type="submit" class="icon-btn danger" title="Delete">
                         <i class="fa-solid fa-trash"></i>
                     </button>
                 </form>
