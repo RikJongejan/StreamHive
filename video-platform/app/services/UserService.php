@@ -21,7 +21,7 @@ class UserService
     public function updateProfile(int $id, string $username, string $bio, ?array $imageFile, string $currentImage): array
     {
         if ($username === '') {
-            return ['success' => false, 'error' => 'Gebruikersnaam mag niet leeg zijn.'];
+            return ['success' => false, 'error' => 'Username cannot be empty.'];
         }
 
         // Naam mag niet al door iemand anders gebruikt worden
@@ -29,7 +29,7 @@ class UserService
 
         if ($existing) {
             if ((int) $existing['id'] !== $id) {
-                return ['success' => false, 'error' => 'Deze gebruikersnaam is al bezet.'];
+                return ['success' => false, 'error' => 'This username is already taken.'];
             }
         }
 
@@ -43,7 +43,7 @@ class UserService
                 $imageTypeAllowed = in_array($imageType, $allowedTypes);
 
                 if ($imageTypeAllowed === false) {
-                    return ['success' => false, 'error' => 'Avatar moet JPG, PNG of WebP zijn.'];
+                    return ['success' => false, 'error' => 'Avatar must be JPG, PNG or WebP.'];
                 }
 
                 $uploadDirectory = UPLOADS_PATH . '/avatars';
@@ -61,7 +61,7 @@ class UserService
         $updated = $this->userModel->updateProfile($id, $username, $bio, $imageName);
 
         if (!$updated) {
-            return ['success' => false, 'error' => 'Opslaan is mislukt.'];
+            return ['success' => false, 'error' => 'Failed to save.'];
         }
 
         return ['success' => true, 'username' => $username];
