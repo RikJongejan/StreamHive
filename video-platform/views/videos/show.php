@@ -26,7 +26,7 @@ require VIEWS_PATH . '/partials/header.php';
     <div class="container watch-wide">
 
         <a class="back-link" href="<?= route('video/index') ?>">
-            <i class="fa-solid fa-arrow-left"></i> Terug naar home
+            <i class="fa-solid fa-arrow-left"></i> Back to home
         </a>
 
         <div class="watch-layout">
@@ -37,7 +37,7 @@ require VIEWS_PATH . '/partials/header.php';
                 <div class="player-wrap">
                     <video controls preload="metadata" poster="<?= !empty($video['thumbnail']) ? UPLOADS_URL . '/thumbnails/' . htmlspecialchars($video['thumbnail']) : '' ?>">
                         <source src="<?= UPLOADS_URL ?>/videos/<?= htmlspecialchars($video['filename']) ?>" type="video/mp4">
-                        Je browser ondersteunt geen video.
+                        Your browser does not support video.
                     </video>
                 </div>
 
@@ -52,7 +52,7 @@ require VIEWS_PATH . '/partials/header.php';
                             <a class="u-name" href="<?= route('user/profile', ['id' => $video['user_id']]) ?>">
                                 <?= htmlspecialchars($uploaderName) ?>
                             </a>
-                            <div class="u-subs"><?= formatCount($subscriberCount) ?> abonnees</div>
+                            <div class="u-subs"><?= formatCount($subscriberCount) ?> subscribers</div>
                         </div>
 
                         <?php if (!$isOwnVideo): ?>
@@ -61,7 +61,7 @@ require VIEWS_PATH . '/partials/header.php';
                                 <input type="hidden" name="video_id" value="<?= $video['id'] ?>">
                                 <button type="submit" class="sub-btn <?= $userSubscribed ? 'subscribed' : '' ?>">
                                     <i class="fa-solid <?= $userSubscribed ? 'fa-check' : 'fa-bell' ?>"></i>
-                                    <?= $userSubscribed ? 'Geabonneerd' : 'Abonneren' ?>
+                                    <?= $userSubscribed ? 'Subscribed' : 'Subscribe' ?>
                                 </button>
                             </form>
                         <?php endif; ?>
@@ -80,7 +80,7 @@ require VIEWS_PATH . '/partials/header.php';
 
                 <div class="video-desc">
                     <div class="desc-meta">
-                        <span><i class="fa-solid fa-eye"></i> <?= formatCount((int) $video['views']) ?> weergaven</span>
+                        <span><i class="fa-solid fa-eye"></i> <?= formatCount((int) $video['views']) ?> views</span>
                         <span><i class="fa-solid fa-clock"></i> <?= timeAgo($video['created_at']) ?></span>
                         <span><i class="fa-solid fa-thumbs-up"></i> <?= formatCount($likeCount) ?> likes</span>
                     </div>
@@ -88,7 +88,7 @@ require VIEWS_PATH . '/partials/header.php';
                     <?php if (!empty($video['description'])): ?>
                         <p class="desc-body"><?= nl2br(htmlspecialchars($video['description'])) ?></p>
                     <?php else: ?>
-                        <p class="desc-body"><em>Geen beschrijving.</em></p>
+                        <p class="desc-body"><em>No description.</em></p>
                     <?php endif; ?>
 
                     <?php if (!empty($videoCategories)): ?>
@@ -103,23 +103,23 @@ require VIEWS_PATH . '/partials/header.php';
                 </div>
 
                 <section class="comments">
-                    <h2><i class="fa-solid fa-comments"></i> <?= count($comments) ?> reactie<?= count($comments) === 1 ? '' : 's' ?></h2>
+                    <h2><i class="fa-solid fa-comments"></i> <?= count($comments) ?> comment<?= count($comments) === 1 ? '' : 's' ?></h2>
 
                     <form class="comment-form" method="POST" action="<?= route('comment/post') ?>">
                         <span class="avatar-mini"><?= htmlspecialchars($myInitial) ?></span>
                         <div class="cf-body">
                             <input type="hidden" name="video_id" value="<?= $video['id'] ?>">
-                            <textarea class="input" name="content" rows="2" placeholder="Voeg een reactie toe..." required></textarea>
+                            <textarea class="input" name="content" rows="2" placeholder="Add a comment..." required></textarea>
                             <div class="cf-actions">
                                 <button type="submit" class="btn btn-honey">
-                                    <i class="fa-solid fa-paper-plane"></i> Plaatsen
+                                    <i class="fa-solid fa-paper-plane"></i> Post
                                 </button>
                             </div>
                         </div>
                     </form>
 
                     <?php if (empty($comments)): ?>
-                        <p style="color: var(--text-mute);">Nog geen reacties. Wees de eerste!</p>
+                        <p style="color: var(--text-mute);">No comments yet. Be the first!</p>
                     <?php else: ?>
                         <?php foreach ($comments as $comment): ?>
                             <?php $commentInitial = strtoupper(substr($comment['username'] ?? '?', 0, 1)); ?>
@@ -139,12 +139,12 @@ require VIEWS_PATH . '/partials/header.php';
 
             </div>
 
-            <!-- ============ RECHTS: aanbevolen ============ -->
+            <!-- ============ RIGHT: recommended ============ -->
             <aside class="watch-sidebar">
-                <h2><i class="fa-solid fa-layer-group"></i> Aanbevolen</h2>
+                <h2><i class="fa-solid fa-layer-group"></i> Recommended</h2>
 
                 <?php if (empty($recommended)): ?>
-                    <p style="color: var(--text-mute);">Nog geen andere video's.</p>
+                    <p style="color: var(--text-mute);">No other videos yet.</p>
                 <?php else: ?>
                     <?php foreach ($recommended as $rec): ?>
                         <a class="rec-card" href="<?= route('video/show', ['id' => $rec['id']]) ?>">
@@ -160,7 +160,7 @@ require VIEWS_PATH . '/partials/header.php';
                             <div class="rec-info">
                                 <h4><?= htmlspecialchars($rec['title']) ?></h4>
                                 <span><?= htmlspecialchars($rec['uploader'] ?? '') ?></span>
-                                <span><?= formatCount((int) $rec['views']) ?> weergaven &middot; <?= timeAgo($rec['created_at']) ?></span>
+                                <span><?= formatCount((int) $rec['views']) ?> views &middot; <?= timeAgo($rec['created_at']) ?></span>
                             </div>
                         </a>
                     <?php endforeach; ?>
