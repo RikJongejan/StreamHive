@@ -28,11 +28,18 @@ class CategoryService
         }
 
         if ($newNames !== '') {
-            $names = array_map('trim', explode(',', $newNames));
+            $rawNames = explode(',', $newNames);
+            $names    = [];
+
+            foreach ($rawNames as $rawName) {
+                $names[] = trim($rawName);
+            }
+
             foreach ($names as $name) {
                 if ($name === '') {
                     continue;
                 }
+
                 $categoryId = $this->categoryModel->findOrCreate($name);
                 $this->categoryModel->assign($videoId, $categoryId);
             }
