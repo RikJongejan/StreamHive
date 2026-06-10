@@ -26,26 +26,36 @@ class UserService
 
         // Naam mag niet al door iemand anders gebruikt worden
         $existing = $this->userModel->getByUsername($username);
-        if ($existing && (int) $existing['id'] !== $id) {
-            return ['success' => false, 'error' => 'Deze gebruikersnaam is al bezet.'];
+
+        if ($existing) {
+            if ((int) $existing['id'] !== $id) {
+                return ['success' => false, 'error' => 'Deze gebruikersnaam is al bezet.'];
+            }
         }
 
         // Avatar is optioneel: alleen vervangen als er een geldig bestand is geupload
         $imageName = $currentImage;
 
-        if ($imageFile !== null && $imageFile['error'] === UPLOAD_ERR_OK) {
-            if (!in_array(mime_content_type($imageFile['tmp_name']), ['image/jpeg', 'image/png', 'image/webp'])) {
-                return ['success' => false, 'error' => 'Avatar moet JPG, PNG of WebP zijn.'];
-            }
+        if ($imageFile !== null) {
+            if ($imageFile['error'] === UPLOAD_ERR_OK) {
+                $allowedTypes     = ['image/jpeg', 'image/png', 'image/webp'];
+                $imageType        = mime_content_type($imageFile['tmp_name']);
+                $imageTypeAllowed = in_array($imageType, $allowedTypes);
 
-            $uploadDirectory = UPLOADS_PATH . '/avatars';
-            if (!is_dir($uploadDirectory)) {
-                mkdir($uploadDirectory, 0777, true);
-            }
+                if ($imageTypeAllowed === false) {
+                    return ['success' => false, 'error' => 'Avatar moet JPG, PNG of WebP zijn.'];
+                }
 
-            $extension = pathinfo($imageFile['name'], PATHINFO_EXTENSION);
-            $imageName = uniqid('avatar_', true) . '.' . $extension;
-            move_uploaded_file($imageFile['tmp_name'], $uploadDirectory . '/' . $imageName);
+                $uploadDirectory = UPLOADS_PATH . '/avatars';
+
+                if (!is_dir($uploadDirectory)) {
+                    mkdir($uploadDirectory, 0777, true);
+                }
+
+                $extension = pathinfo($imageFile['name'], PATHINFO_EXTENSION);
+                $imageName = uniqid('avatar_', true) . '.' . $extension;
+                move_uploaded_file($imageFile['tmp_name'], $uploadDirectory . '/' . $imageName);
+            }
         }
 
         $updated = $this->userModel->updateProfile($id, $username, $bio, $imageName);
