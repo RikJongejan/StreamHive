@@ -18,8 +18,8 @@ $navUsernameInitial = $navUsername !== '' ? strtoupper(substr($navUsername, 0, 1
 
         <form class="nav-search" method="GET" action="<?= BASE_URL ?>" role="search">
             <input type="hidden" name="route" value="video/search">
-            <input type="text" name="query" placeholder="Zoek video's..." aria-label="Zoeken">
-            <button type="submit" aria-label="Zoeken"><i class="fa-solid fa-magnifying-glass"></i></button>
+            <input type="text" name="query" placeholder="Search videos..." aria-label="Search">
+            <button type="submit" aria-label="Search"><i class="fa-solid fa-magnifying-glass"></i></button>
         </form>
 
         <button class="nav-toggle" aria-label="Menu"><i class="fa-solid fa-bars"></i></button>
@@ -28,11 +28,11 @@ $navUsernameInitial = $navUsername !== '' ? strtoupper(substr($navUsername, 0, 1
             <?php if (isLoggedIn()): ?>
                 <a class="nav-link" href="<?= route('video/index') ?>"><i class="fa-solid fa-house"></i> Home</a>
                 <a class="nav-link" href="<?= route('video/upload') ?>"><i class="fa-solid fa-cloud-arrow-up"></i> Upload</a>
-                <a class="nav-link" href="<?= route('auth/logout') ?>"><i class="fa-solid fa-right-from-bracket"></i> Uitloggen</a>
-                <a class="nav-avatar" href="<?= route('user/profile') ?>" title="Mijn kanaal (<?= htmlspecialchars($navUsername) ?>)"><?= htmlspecialchars($navUsernameInitial) ?></a>
+                <a class="nav-link" href="<?= route('auth/logout') ?>"><i class="fa-solid fa-right-from-bracket"></i> Log out</a>
+                <a class="nav-avatar" href="<?= route('user/profile') ?>" title="My channel (<?= htmlspecialchars($navUsername) ?>)"><?= htmlspecialchars($navUsernameInitial) ?></a>
             <?php else: ?>
-                <a class="nav-link" href="<?= route('auth/login') ?>">Inloggen</a>
-                <a class="btn btn-honey" href="<?= route('auth/register') ?>">Registreren</a>
+                <a class="nav-link" href="<?= route('auth/login') ?>">Log in</a>
+                <a class="btn btn-honey" href="<?= route('auth/register') ?>">Sign up</a>
             <?php endif; ?>
         </div>
 
