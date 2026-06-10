@@ -44,19 +44,30 @@ function timeAgo(string $datetime): string
 {
     $seconds = time() - strtotime($datetime);
 
-    if ($seconds < 60)    return 'zojuist';
-    if ($seconds < 3600)  return floor($seconds / 60)    . ' min geleden';
-    if ($seconds < 86400) return floor($seconds / 3600)  . ' uur geleden';
-    if ($seconds < 604800)return floor($seconds / 86400) . ' dagen geleden';
-
-    return date('d-m-Y', strtotime($datetime));
+    if ($seconds < 60) {
+        return 'zojuist';
+    } elseif ($seconds < 3600) {
+        $minutes = floor($seconds / 60);
+        return $minutes . ' min geleden';
+    } elseif ($seconds < 86400) {
+        $hours = floor($seconds / 3600);
+        return $hours . ' uur geleden';
+    } elseif ($seconds < 604800) {
+        $days = floor($seconds / 86400);
+        return $days . ' dagen geleden';
+    } else {
+        return date('d-m-Y', strtotime($datetime));
+    }
 }
 
 // Maakt korte aantallen leesbaar (1200 -> 1,2k) voor weergaven en abonnees
 function formatCount(int $number): string
 {
-    if ($number >= 1000000) return round($number / 1000000, 1) . 'M';
-    if ($number >= 1000)    return round($number / 1000, 1) . 'k';
-
-    return (string) $number;
+    if ($number >= 1000000) {
+        return round($number / 1000000, 1) . 'M';
+    } elseif ($number >= 1000) {
+        return round($number / 1000, 1) . 'k';
+    } else {
+        return (string) $number;
+    }
 }
