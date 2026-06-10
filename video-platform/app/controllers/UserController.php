@@ -22,7 +22,12 @@ class UserController
         requireLogin();
 
         $currentId = (int) $_SESSION['user_id'];
-        $profileId = (int) ($_GET['id'] ?? $currentId);
+
+        if (isset($_GET['id'])) {
+            $profileId = (int) $_GET['id'];
+        } else {
+            $profileId = $currentId;
+        }
 
         $profileUser = $this->userService->getProfile($profileId);
 
@@ -38,7 +43,11 @@ class UserController
         $subscribers     = $this->subscriptionService->getSubscribers($profileId);
         $userSubscribed  = $this->subscriptionService->isSubscribed($currentId, $profileId);
         // Eigen kanaal toont ook op wie jij geabonneerd bent
-        $subscriptions   = $isOwn ? $this->subscriptionService->getSubscriptions($profileId) : [];
+        if ($isOwn) {
+            $subscriptions = $this->subscriptionService->getSubscriptions($profileId);
+        } else {
+            $subscriptions = [];
+        }
         $avatarInitial   = strtoupper(substr($profileUser['username'], 0, 1));
 
         $pageTitle = $profileUser['username'];
