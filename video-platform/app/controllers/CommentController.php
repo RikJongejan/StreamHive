@@ -16,8 +16,17 @@ class CommentController
     {
         requireLogin();
 
-        $videoId = (int) ($_POST['video_id'] ?? 0);
-        $content = trim($_POST['content'] ?? '');
+        if (isset($_POST['video_id'])) {
+            $videoId = (int) $_POST['video_id'];
+        } else {
+            $videoId = 0;
+        }
+
+        if (isset($_POST['content'])) {
+            $content = trim($_POST['content']);
+        } else {
+            $content = '';
+        }
 
         if ($content !== '') {
             $this->commentService->addComment((int) $_SESSION['user_id'], $videoId, $content);
