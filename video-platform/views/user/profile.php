@@ -28,34 +28,34 @@ require VIEWS_PATH . '/partials/header.php';
             <div class="profile-info">
                 <h1>
                     <?= htmlspecialchars($profileUser['username']) ?>
-                    <?php if ($isOwn): ?><i class="fa-solid fa-crown" style="color:var(--honey);font-size:1.1rem;" title="Dit ben jij"></i><?php endif; ?>
+                    <?php if ($isOwn): ?><i class="fa-solid fa-crown" style="color:var(--honey);font-size:1.1rem;" title="This is you"></i><?php endif; ?>
                 </h1>
 
                 <?php if (!empty($profileUser['bio'])): ?>
                     <p class="bio"><?= nl2br(htmlspecialchars($profileUser['bio'])) ?></p>
                 <?php elseif ($isOwn): ?>
-                    <p class="bio"><em>Nog geen bio. Voeg er een toe via Profiel bewerken.</em></p>
+                    <p class="bio"><em>No bio yet. Add one via Edit Profile.</em></p>
                 <?php endif; ?>
 
                 <div class="profile-stats">
-                    <div class="stat"><b><?= count($videos) ?></b><span>Video's</span></div>
-                    <div class="stat"><b><?= formatCount($subscriberCount) ?></b><span>Abonnees</span></div>
+                    <div class="stat"><b><?= count($videos) ?></b><span>Videos</span></div>
+                    <div class="stat"><b><?= formatCount($subscriberCount) ?></b><span>Subscribers</span></div>
                     <?php if ($isOwn): ?>
-                        <div class="stat"><b><?= count($subscriptions) ?></b><span>Abonnementen</span></div>
+                        <div class="stat"><b><?= count($subscriptions) ?></b><span>Subscriptions</span></div>
                     <?php endif; ?>
                 </div>
             </div>
 
             <div class="profile-actions">
                 <?php if ($isOwn): ?>
-                    <a class="btn btn-ghost" href="<?= route('user/settings') ?>"><i class="fa-solid fa-pen"></i> Profiel bewerken</a>
+                    <a class="btn btn-ghost" href="<?= route('user/settings') ?>"><i class="fa-solid fa-pen"></i> Edit profile</a>
                     <a class="btn btn-honey" href="<?= route('video/upload') ?>"><i class="fa-solid fa-cloud-arrow-up"></i> Upload</a>
                 <?php else: ?>
                     <form method="POST" action="<?= route('subscription/toggle') ?>">
                         <input type="hidden" name="leader_id" value="<?= $profileUser['id'] ?>">
                         <button type="submit" class="sub-btn <?= $userSubscribed ? 'subscribed' : '' ?>">
                             <i class="fa-solid <?= $userSubscribed ? 'fa-check' : 'fa-bell' ?>"></i>
-                            <?= $userSubscribed ? 'Geabonneerd' : 'Abonneren' ?>
+                            <?= $userSubscribed ? 'Subscribed' : 'Subscribe' ?>
                         </button>
                     </form>
                 <?php endif; ?>
@@ -63,23 +63,23 @@ require VIEWS_PATH . '/partials/header.php';
         </div>
 
         <div class="tabs">
-            <button class="tab active" data-tab="tab-videos"><i class="fa-solid fa-clapperboard"></i> Video's</button>
-            <button class="tab" data-tab="tab-subs"><i class="fa-solid fa-users"></i> Abonnees</button>
+            <button class="tab active" data-tab="tab-videos"><i class="fa-solid fa-clapperboard"></i> Videos</button>
+            <button class="tab" data-tab="tab-subs"><i class="fa-solid fa-users"></i> Subscribers</button>
             <?php if ($isOwn): ?>
-                <button class="tab" data-tab="tab-following"><i class="fa-solid fa-heart"></i> Abonnementen</button>
+                <button class="tab" data-tab="tab-following"><i class="fa-solid fa-heart"></i> Subscriptions</button>
             <?php endif; ?>
         </div>
 
-        <!-- Tab: video's -->
+        <!-- Tab: videos -->
         <div id="tab-videos" class="tab-panel active">
             <?php if (empty($videos)): ?>
                 <div class="empty-state">
                     <?php $beeWrap = null; require VIEWS_PATH . '/partials/bee.php'; ?>
-                    <h3><?= $isOwn ? 'Jij hebt' : htmlspecialchars($profileUser['username']) . ' heeft' ?> nog geen video's</h3>
+                    <h3><?= $isOwn ? 'You don\'t have any videos yet' : htmlspecialchars($profileUser['username']) . ' doesn\'t have any videos yet' ?></h3>
                     <?php if ($isOwn): ?>
-                        <p>Upload je eerste video en vul je kanaal.</p>
+                        <p>Upload your first video and fill your channel.</p>
                         <a class="btn btn-honey" href="<?= route('video/upload') ?>">
-                            <i class="fa-solid fa-cloud-arrow-up"></i> Upload nu
+                            <i class="fa-solid fa-cloud-arrow-up"></i> Upload now
                         </a>
                     <?php endif; ?>
                 </div>
@@ -90,10 +90,10 @@ require VIEWS_PATH . '/partials/header.php';
             <?php endif; ?>
         </div>
 
-        <!-- Tab: abonnees -->
+        <!-- Tab: subscribers -->
         <div id="tab-subs" class="tab-panel">
             <?php if (empty($subscribers)): ?>
-                <p style="color:var(--text-mute);padding:20px 0;">Nog geen abonnees.</p>
+                <p style="color:var(--text-mute);padding:20px 0;">No subscribers yet.</p>
             <?php else: ?>
                 <div class="sub-list">
                     <?php foreach ($subscribers as $subscriber): ?>
@@ -101,7 +101,7 @@ require VIEWS_PATH . '/partials/header.php';
                             <span class="avatar-mini"><?= htmlspecialchars(strtoupper(substr($subscriber['username'], 0, 1))) ?></span>
                             <div>
                                 <b><?= htmlspecialchars($subscriber['username']) ?></b><br>
-                                <span>Bekijk kanaal</span>
+                                <span>View channel</span>
                             </div>
                         </a>
                     <?php endforeach; ?>
@@ -109,11 +109,11 @@ require VIEWS_PATH . '/partials/header.php';
             <?php endif; ?>
         </div>
 
-        <!-- Tab: abonnementen (alleen eigen kanaal) -->
+        <!-- Tab: subscriptions (own channel only) -->
         <?php if ($isOwn): ?>
             <div id="tab-following" class="tab-panel">
                 <?php if (empty($subscriptions)): ?>
-                    <p style="color:var(--text-mute);padding:20px 0;">Je bent nog nergens op geabonneerd.</p>
+                    <p style="color:var(--text-mute);padding:20px 0;">You're not subscribed to anyone yet.</p>
                 <?php else: ?>
                     <div class="sub-list">
                         <?php foreach ($subscriptions as $followedChannel): ?>
@@ -121,7 +121,7 @@ require VIEWS_PATH . '/partials/header.php';
                                 <span class="avatar-mini"><?= htmlspecialchars(strtoupper(substr($followedChannel['username'], 0, 1))) ?></span>
                                 <div>
                                     <b><?= htmlspecialchars($followedChannel['username']) ?></b><br>
-                                    <span>Bekijk kanaal</span>
+                                    <span>View channel</span>
                                 </div>
                             </a>
                         <?php endforeach; ?>
