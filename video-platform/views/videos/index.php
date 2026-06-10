@@ -16,14 +16,14 @@ require VIEWS_PATH . '/partials/header.php';
 
         <section class="hero">
             <div class="hero-text">
-                <h1>Welkom in de <span class="accent">Hive</span></h1>
-                <p>Ontdek, deel en verbind. Duizenden video's, allemaal op één plek &mdash; net zo druk als een bijenkorf.</p>
+                <h1>Welcome to the <span class="accent">Hive</span></h1>
+                <p>Discover, share, and connect. Thousands of videos, all in one place &mdash; as busy as a beehive.</p>
                 <div class="hero-actions">
                     <a class="btn btn-honey btn-lg" href="<?= route('video/upload') ?>">
-                        <i class="fa-solid fa-cloud-arrow-up"></i> Upload je video
+                        <i class="fa-solid fa-cloud-arrow-up"></i> Upload your video
                     </a>
                     <a class="btn btn-ghost btn-lg" href="<?= route('user/profile') ?>">
-                        <i class="fa-solid fa-user"></i> Mijn kanaal
+                        <i class="fa-solid fa-user"></i> My channel
                     </a>
                 </div>
             </div>
@@ -34,7 +34,7 @@ require VIEWS_PATH . '/partials/header.php';
         <?php if (!empty($categories)): ?>
             <div class="cat-bar">
                 <a class="cat-chip-link <?= $activeCategory === 0 ? 'active' : '' ?>" href="<?= route('video/index') ?>">
-                    <i class="fa-solid fa-border-all"></i> Alles
+                    <i class="fa-solid fa-border-all"></i> All
                 </a>
                 <?php foreach ($categories as $category): ?>
                     <a class="cat-chip-link <?= $activeCategory === (int) $category['id'] ? 'active' : '' ?>"
@@ -49,9 +49,9 @@ require VIEWS_PATH . '/partials/header.php';
             <h2>
                 <i class="fa-solid fa-fire"></i>
                 <?php if ($activeCategory > 0): ?>
-                    Categorie
+                    Category
                 <?php else: ?>
-                    Nieuwste video's
+                    Latest videos
                 <?php endif; ?>
             </h2>
         </div>
@@ -59,10 +59,10 @@ require VIEWS_PATH . '/partials/header.php';
         <?php if (empty($videos)): ?>
             <div class="empty-state">
                 <?php $beeWrap = null; require VIEWS_PATH . '/partials/bee.php'; ?>
-                <h3><?= $activeCategory > 0 ? 'Nog geen video\'s in deze categorie' : 'Nog geen video\'s in de korf' ?></h3>
-                <p>Wees de eerste die iets deelt met de zwerm.</p>
+                <h3><?= $activeCategory > 0 ? 'No videos in this category yet' : 'No videos in the hive yet' ?></h3>
+                <p>Be the first to share something with the swarm.</p>
                 <a class="btn btn-honey" href="<?= route('video/upload') ?>">
-                    <i class="fa-solid fa-cloud-arrow-up"></i> Upload je eerste video
+                    <i class="fa-solid fa-cloud-arrow-up"></i> Upload your first video
                 </a>
             </div>
         <?php else: ?>
