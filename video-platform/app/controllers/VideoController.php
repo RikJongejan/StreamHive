@@ -27,13 +27,20 @@ class VideoController
     {
         requireLogin();
 
-        // Optioneel filteren op categorie via ?cat=ID; anders alle video's
-        $categories     = $this->categoryService->getAllCategories();
-        $activeCategory = (int) ($_GET['cat'] ?? 0);
+        $categories = $this->categoryService->getAllCategories();
 
-        $videos = $activeCategory > 0
-            ? $this->videoService->getVideosByCategory($activeCategory)
-            : $this->videoService->getAllVideos();
+        // Optioneel filteren op categorie via ?cat=ID; anders alle video's
+        if (isset($_GET['cat'])) {
+            $activeCategory = (int) $_GET['cat'];
+        } else {
+            $activeCategory = 0;
+        }
+
+        if ($activeCategory > 0) {
+            $videos = $this->videoService->getVideosByCategory($activeCategory);
+        } else {
+            $videos = $this->videoService->getAllVideos();
+        }
 
         require VIEWS_PATH . '/videos/index.php';
     }
@@ -42,7 +49,12 @@ class VideoController
     {
         requireLogin();
 
-        $id    = (int) ($_GET['id'] ?? 0);
+        if (isset($_GET['id'])) {
+            $id = (int) $_GET['id'];
+        } else {
+            $id = 0;
+        }
+
         $video = $this->videoService->getVideo($id);
 
         if (!$video) {
@@ -57,19 +69,42 @@ class VideoController
             $_SESSION['viewed_videos'][$id] = true;
         }
 
+        $userId         = (int) $_SESSION['user_id'];
+        $uploaderUserId = (int) $video['user_id'];
+
         $comments        = $this->commentService->getCommentsForVideo($id);
         $likeCount       = $this->likeService->getLikeCount($id);
-        $userLiked       = $this->likeService->hasLiked((int) $_SESSION['user_id'], $id);
-        $subscriberCount = $this->subscriptionService->getSubscriberCount((int) $video['user_id']);
-        $userSubscribed  = $this->subscriptionService->isSubscribed((int) $_SESSION['user_id'], (int) $video['user_id']);
+        $userLiked       = $this->likeService->hasLiked($userId, $id);
+        $subscriberCount = $this->subscriptionService->getSubscriberCount($uploaderUserId);
+        $userSubscribed  = $this->subscriptionService->isSubscribed($userId, $uploaderUserId);
         $categories      = $this->categoryService->getAllCategories();
-        $videoCategories = array_column($this->videoService->getCategoriesForVideo($id), 'id');
         $recommended     = $this->videoService->getRecommended($id);
 
-        $uploaderName    = $video['uploader'] ?? '';
-        $uploaderInitial = $uploaderName !== '' ? strtoupper(substr($uploaderName, 0, 1)) : '?';
-        $isOwnVideo      = (int) $video['user_id'] === (int) $_SESSION['user_id'];
-        $myInitial       = strtoupper(substr($_SESSION['username'] ?? '?', 0, 1));
+        $videoCategories = [];
+        $categoryRows    = $this->videoService->getCategoriesForVideo($id);
+        foreach ($categoryRows as $categoryRow) {
+            $videoCategories[] = $categoryRow['id'];
+        }
+
+        if (isset($video['uploader'])) {
+            $uploaderName = $video['uploader'];
+        } else {
+            $uploaderName = '';
+        }
+
+        if ($uploaderName !== '') {
+            $uploaderInitial = strtoupper(substr($uploaderName, 0, 1));
+        } else {
+            $uploaderInitial = '?';
+        }
+
+        $isOwnVideo = $uploaderUserId === $userId;
+
+        if (isset($_SESSION['username'])) {
+            $myInitial = strtoupper(substr($_SESSION['username'], 0, 1));
+        } else {
+            $myInitial = '?';
+        }
 
         require VIEWS_PATH . '/videos/show.php';
     }
@@ -78,8 +113,18 @@ class VideoController
     {
         requireLogin();
 
-        $query  = sanitize($_GET['query'] ?? '');
-        $videos = $query !== '' ? $this->videoService->search($query) : [];
+        if (isset($_GET['query'])) {
+            $query = sanitize($_GET['query']);
+        } else {
+            $query = '';
+        }
+
+        if ($query !== '') {
+            $videos = $this->videoService->search($query);
+        } else {
+            $videos = [];
+        }
+
         require VIEWS_PATH . '/videos/search.php';
     }
 
@@ -91,20 +136,29 @@ class VideoController
         $categories = $this->categoryService->getAllCategories();
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $result = $this->videoService->upload(
-                (int) $_SESSION['user_id'],
-                sanitize($_POST['title'] ?? ''),
-                sanitize($_POST['description'] ?? ''),
-                $_FILES['video'] ?? null,
-                $_FILES['thumbnail'] ?? null
-            );
+            $userId      = (int) $_SESSION['user_id'];
+            $title       = sanitize($_POST['title'] ?? '');
+            $description = sanitize($_POST['description'] ?? '');
+
+            if (isset($_FILES['video'])) {
+                $videoFile = $_FILES['video'];
+            } else {
+                $videoFile = null;
+            }
+
+            if (isset($_FILES['thumbnail'])) {
+                $thumbnailFile = $_FILES['thumbnail'];
+            } else {
+                $thumbnailFile = null;
+            }
+
+            $result = $this->videoService->upload($userId, $title, $description, $videoFile, $thumbnailFile);
 
             if ($result['success']) {
-                $this->categoryService->saveForVideo(
-                    $result['videoId'],
-                    $_POST['categories'] ?? [],
-                    sanitize($_POST['new_categories'] ?? '')
-                );
+                $selectedCategories = $_POST['categories'] ?? [];
+                $newCategoryNames   = sanitize($_POST['new_categories'] ?? '');
+
+                $this->categoryService->saveForVideo($result['videoId'], $selectedCategories, $newCategoryNames);
                 redirect(route('video/index'));
             }
 
@@ -119,7 +173,12 @@ class VideoController
     {
         requireLogin();
 
-        $videoId = (int) ($_POST['video_id'] ?? 0);
+        if (isset($_POST['video_id'])) {
+            $videoId = (int) $_POST['video_id'];
+        } else {
+            $videoId = 0;
+        }
+
         $this->videoService->delete($videoId, (int) $_SESSION['user_id']);
 
         redirect(route('user/profile'));
