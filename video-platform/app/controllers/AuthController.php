@@ -18,8 +18,17 @@ class AuthController
         $error = '';
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $email    = trim($_POST['email'] ?? '');
-            $password = $_POST['password'] ?? '';
+            if (isset($_POST['email'])) {
+                $email = trim($_POST['email']);
+            } else {
+                $email = '';
+            }
+
+            if (isset($_POST['password'])) {
+                $password = $_POST['password'];
+            } else {
+                $password = '';
+            }
 
             $result = $this->authService->login($email, $password);
 
@@ -39,10 +48,29 @@ class AuthController
         $error = '';
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $email           = trim($_POST['email'] ?? '');
-            $username        = trim($_POST['username'] ?? '');
-            $password        = $_POST['password'] ?? '';
-            $confirmPassword = $_POST['confirm_password'] ?? '';
+            if (isset($_POST['email'])) {
+                $email = trim($_POST['email']);
+            } else {
+                $email = '';
+            }
+
+            if (isset($_POST['username'])) {
+                $username = trim($_POST['username']);
+            } else {
+                $username = '';
+            }
+
+            if (isset($_POST['password'])) {
+                $password = $_POST['password'];
+            } else {
+                $password = '';
+            }
+
+            if (isset($_POST['confirm_password'])) {
+                $confirmPassword = $_POST['confirm_password'];
+            } else {
+                $confirmPassword = '';
+            }
 
             $result = $this->authService->register($email, $username, $password, $confirmPassword);
 
