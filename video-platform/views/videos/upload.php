@@ -6,7 +6,7 @@
 // - Categorieën aanvinken of nieuwe aanmaken
 $categories = $categories ?? [];
 $error      = $error      ?? '';
-$pageTitle = 'Uploaden';
+$pageTitle = 'Upload';
 require VIEWS_PATH . '/partials/header.php';
 ?>
 
@@ -14,12 +14,12 @@ require VIEWS_PATH . '/partials/header.php';
     <div class="container">
 
         <a class="back-link" href="<?= route('video/index') ?>">
-            <i class="fa-solid fa-arrow-left"></i> Terug naar home
+            <i class="fa-solid fa-arrow-left"></i> Back to home
         </a>
 
         <div class="form-card">
-            <h1><i class="fa-solid fa-cloud-arrow-up"></i> Video uploaden</h1>
-            <p class="muted">Deel je video met de zwerm. Max 500 MB &mdash; MP4, WebM of OGG.</p>
+            <h1><i class="fa-solid fa-cloud-arrow-up"></i> Upload a video</h1>
+            <p class="muted">Share your video with the swarm. Max 500 MB &mdash; MP4, WebM or OGG.</p>
 
             <?php if (!empty($error)): ?>
                 <div class="alert alert-error">
@@ -31,40 +31,40 @@ require VIEWS_PATH . '/partials/header.php';
             <form method="POST" action="<?= route('video/upload') ?>" enctype="multipart/form-data">
 
                 <div class="form-group">
-                    <label>Titel</label>
-                    <input class="input" type="text" name="title" placeholder="Geef je video een pakkende titel" required>
+                    <label>Title</label>
+                    <input class="input" type="text" name="title" placeholder="Give your video a catchy title" required>
                 </div>
 
                 <div class="form-group">
-                    <label>Beschrijving</label>
-                    <textarea class="input" name="description" rows="4" placeholder="Waar gaat je video over?"></textarea>
+                    <label>Description</label>
+                    <textarea class="input" name="description" rows="4" placeholder="What is your video about?"></textarea>
                 </div>
 
                 <div class="form-group">
-                    <label>Videobestand</label>
+                    <label>Video file</label>
                     <div class="filefield">
                         <input type="file" name="video" accept="video/*" required>
                         <div class="filebox">
                             <i class="fa-solid fa-film"></i>
-                            <span class="file-name" data-placeholder="Kies een videobestand">Kies een videobestand (MP4, WebM, OGG)</span>
+                            <span class="file-name" data-placeholder="Choose a video file">Choose a video file (MP4, WebM, OGG)</span>
                         </div>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label>Thumbnail <small>(optioneel)</small></label>
+                    <label>Thumbnail <small>(optional)</small></label>
                     <div class="filefield">
                         <input type="file" name="thumbnail" accept="image/*">
                         <div class="filebox">
                             <i class="fa-solid fa-image"></i>
-                            <span class="file-name" data-placeholder="Kies een afbeelding">Kies een afbeelding (JPG, PNG, WebP)</span>
+                            <span class="file-name" data-placeholder="Choose an image">Choose an image (JPG, PNG, WebP)</span>
                         </div>
                     </div>
                 </div>
 
                 <?php if (!empty($categories)): ?>
                     <div class="form-group">
-                        <label>Categorie&euml;n</label>
+                        <label>Categories</label>
                         <div class="chip-grid">
                             <?php foreach ($categories as $category): ?>
                                 <div class="chip-check">
@@ -77,12 +77,12 @@ require VIEWS_PATH . '/partials/header.php';
                 <?php endif; ?>
 
                 <div class="form-group">
-                    <label>Nieuwe categorie&euml;n toevoegen <small>(komma-gescheiden)</small></label>
-                    <input class="input" type="text" name="new_categories" placeholder="bijv. Gaming, Muziek, Vlog">
+                    <label>Add new categories <small>(comma-separated)</small></label>
+                    <input class="input" type="text" name="new_categories" placeholder="e.g. Gaming, Music, Vlog">
                 </div>
 
                 <button class="btn btn-honey btn-lg" type="submit">
-                    <i class="fa-solid fa-upload"></i> Uploaden
+                    <i class="fa-solid fa-upload"></i> Upload
                 </button>
             </form>
         </div>
