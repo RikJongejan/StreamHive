@@ -33,7 +33,7 @@ class UserController
 
         if (!$profileUser) {
             http_response_code(404);
-            echo 'Gebruiker niet gevonden.';
+            echo 'User not found.';
             return;
         }
 
