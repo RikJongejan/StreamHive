@@ -31,14 +31,21 @@ class SubscriptionModel
     {
         $stmt = $this->pdo->prepare("SELECT id FROM subscriptions WHERE subscriber_id = ? AND leader_id = ?");
         $stmt->execute([$subscriberId, $leaderId]);
-        return (bool) $stmt->fetch();
+        $row = $stmt->fetch();
+
+        if ($row) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public function countForUser(int $leaderId): int
     {
-        $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM subscriptions WHERE leader_id = ?");
+        $stmt  = $this->pdo->prepare("SELECT COUNT(*) FROM subscriptions WHERE leader_id = ?");
         $stmt->execute([$leaderId]);
-        return (int) $stmt->fetchColumn();
+        $count = $stmt->fetchColumn();
+        return (int) $count;
     }
 
     // Lijst van gebruikers die deze leader volgen (voor op de profielpagina)
