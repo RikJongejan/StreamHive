@@ -30,13 +30,20 @@ class LikeModel
     {
         $stmt = $this->pdo->prepare("SELECT id FROM likes WHERE user_id = ? AND video_id = ?");
         $stmt->execute([$userId, $videoId]);
-        return (bool) $stmt->fetch();
+        $row = $stmt->fetch();
+
+        if ($row) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public function countForVideo(int $videoId): int
     {
-        $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM likes WHERE video_id = ?");
+        $stmt  = $this->pdo->prepare("SELECT COUNT(*) FROM likes WHERE video_id = ?");
         $stmt->execute([$videoId]);
-        return (int) $stmt->fetchColumn();
+        $count = $stmt->fetchColumn();
+        return (int) $count;
     }
 }
