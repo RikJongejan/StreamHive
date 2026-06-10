@@ -11,7 +11,8 @@ require_once __DIR__ . '/../app/config/app.php';
 require_once __DIR__ . '/../includes/helpers.php';
 require_once __DIR__ . '/../includes/auth.php';
 
-spl_autoload_register(function (string $class): void {
+function autoloadClass(string $class): void
+{
     $folders = [
         __DIR__ . '/../core/',
         __DIR__ . '/../app/models/',
@@ -26,7 +27,9 @@ spl_autoload_register(function (string $class): void {
             return;
         }
     }
-});
+}
+
+spl_autoload_register('autoloadClass');
 
 $pdo    = Database::getConnection();
 $router = new Router($pdo);
