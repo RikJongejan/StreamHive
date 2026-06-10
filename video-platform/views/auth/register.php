@@ -3,7 +3,7 @@
 // Toont het registratieformulier met e-mail, gebruikersnaam en wachtwoordvelden
 // Geeft een foutmelding als de registratie mislukt
 $error     = $error ?? '';
-$pageTitle = 'Registreren';
+$pageTitle = 'Sign Up';
 $hideNav   = true;
 require VIEWS_PATH . '/partials/header.php';
 ?>
@@ -16,8 +16,8 @@ require VIEWS_PATH . '/partials/header.php';
                  onerror="this.onerror=null;this.src='<?= ASSETS_URL ?>/images/logo.svg'">
         </div>
 
-        <h1>Word lid van de Hive</h1>
-        <p class="sub">Maak een account en begin met delen</p>
+        <h1>Join the Hive</h1>
+        <p class="sub">Create an account and start sharing</p>
 
         <?php if (!empty($error)): ?>
             <div class="alert alert-error">
@@ -28,32 +28,32 @@ require VIEWS_PATH . '/partials/header.php';
 
         <form method="POST" action="<?= route('auth/register') ?>">
             <div class="form-group">
-                <label>E-mailadres</label>
-                <input class="input" type="email" name="email" placeholder="jij@email.com" required autofocus>
+                <label>Email address</label>
+                <input class="input" type="email" name="email" placeholder="you@email.com" required autofocus>
             </div>
 
             <div class="form-group">
-                <label>Gebruikersnaam</label>
-                <input class="input" type="text" name="username" placeholder="jouwnaam" required>
+                <label>Username</label>
+                <input class="input" type="text" name="username" placeholder="yourname" required>
             </div>
 
             <div class="form-group">
-                <label>Wachtwoord</label>
-                <input class="input" type="password" name="password" placeholder="Minimaal 8 tekens" required>
+                <label>Password</label>
+                <input class="input" type="password" name="password" placeholder="At least 8 characters" required>
             </div>
 
             <div class="form-group">
-                <label>Wachtwoord bevestigen</label>
+                <label>Confirm password</label>
                 <input class="input" type="password" name="confirm_password" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;" required>
             </div>
 
             <button class="btn btn-honey btn-block btn-lg" type="submit">
-                <i class="fa-solid fa-user-plus"></i> Account aanmaken
+                <i class="fa-solid fa-user-plus"></i> Create account
             </button>
         </form>
 
         <div class="link">
-            Al een account? <a href="<?= route('auth/login') ?>">Inloggen</a>
+            Already have an account? <a href="<?= route('auth/login') ?>">Log in</a>
         </div>
 
     </div>
