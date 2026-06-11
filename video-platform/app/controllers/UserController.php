@@ -1,15 +1,11 @@
 <?php
-// UserController.php - Controller voor gebruikersprofielen en instellingen
-// Beheert alle gebruikersgerelateerde pagina's en acties:
-// - Profielpagina van een gebruiker weergeven (profile)
-// - Instellingenpagina weergeven (settings)
-// - Profielwijzigingen opslaan inclusief avatar-upload (update)
 class UserController
 {
     private UserService $userService;
     private VideoService $videoService;
     private SubscriptionService $subscriptionService;
 
+    // __construct() wordt automatisch aangeroepen zodra je 'new UserController($pdo)' schrijft
     public function __construct(PDO $pdo)
     {
         $this->userService         = new UserService($pdo);
@@ -19,11 +15,11 @@ class UserController
 
     public function profile(): void
     {
-        requireLogin();
+        Auth::requireLogin();
 
         $currentId = (int) $_SESSION['user_id'];
 
-        if (isset($_GET['id'])) {
+        if (isset($_GET['id'])) { // isset() controleert of de URL-parameter bestaat
             $profileId = (int) $_GET['id'];
         } else {
             $profileId = $currentId;
@@ -32,7 +28,7 @@ class UserController
         $profileUser = $this->userService->getProfile($profileId);
 
         if (!$profileUser) {
-            http_response_code(404);
+            http_response_code(404); // http_response_code() stuurt een HTTP-statuscode (404 = pagina niet gevonden)
             echo 'User not found.';
             return;
         }
@@ -48,6 +44,7 @@ class UserController
         } else {
             $subscriptions = [];
         }
+        // strtoupper() maakt hoofdletter, substr() haalt het eerste teken op — samen de avatar-initiaal
         $avatarInitial   = strtoupper(substr($profileUser['username'], 0, 1));
 
         $pageTitle = $profileUser['username'];
@@ -56,11 +53,11 @@ class UserController
 
     public function settings(): void
     {
-        requireLogin();
+        Auth::requireLogin();
 
         $user          = $this->userService->getProfile((int) $_SESSION['user_id']);
         $error         = '';
-        $avatarInitial = strtoupper(substr($user['username'], 0, 1));
+        $avatarInitial = strtoupper(substr($user['username'], 0, 1)); // strtoupper() + substr() voor de avatar-initiaal (eerste letter als hoofdletter)
 
         $pageTitle = 'Instellingen';
         require VIEWS_PATH . '/user/settings.php';
@@ -68,15 +65,15 @@ class UserController
 
     public function update(): void
     {
-        requireLogin();
+        Auth::requireLogin();
 
         $id      = (int) $_SESSION['user_id'];
         $current = $this->userService->getProfile($id);
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') { // $_SERVER['REQUEST_METHOD'] controleert of het formulier is verzonden via POST
             $result = $this->userService->updateProfile(
                 $id,
-                trim($_POST['username'] ?? ''),
+                trim($_POST['username'] ?? ''), // trim() verwijdert spaties aan begin en einde
                 trim($_POST['bio'] ?? ''),
                 $_FILES['avatar'] ?? null,
                 $current['profile_image'] ?? ''
@@ -85,7 +82,7 @@ class UserController
             if ($result['success']) {
                 // Sessie bijwerken zodat de navbar meteen de nieuwe naam toont
                 $_SESSION['username'] = $result['username'];
-                redirect(route('user/profile'));
+                Helpers::redirect(Helpers::route('user/profile'));
             }
 
             $error         = $result['error'];
@@ -96,6 +93,6 @@ class UserController
             return;
         }
 
-        redirect(route('user/settings'));
+        Helpers::redirect(Helpers::route('user/settings'));
     }
 }
