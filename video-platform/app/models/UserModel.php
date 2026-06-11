@@ -1,15 +1,9 @@
 <?php
-// UserModel.php - Model voor gebruikers
-// Beheert alle gebruikersgerelateerde databaseoperaties:
-// - Gebruiker registreren en inloggen
-// - Gebruiker ophalen op id, e-mail of gebruikersnaam
-// - Profielgegevens bijwerken
-// - Account verwijderen
-// Werkt met de 'users' tabel in de database
 class UserModel
 {
     private PDO $pdo;
 
+    // __construct() wordt automatisch aangeroepen zodra je 'new UserModel($pdo)' schrijft
     public function __construct(PDO $pdo)
     {
         $this->pdo = $pdo;
@@ -17,15 +11,15 @@ class UserModel
 
     public function getAll(): array
     {
-        $stmt = $this->pdo->query("SELECT * FROM users");
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt = $this->pdo->query("SELECT * FROM users"); // query() voor vaste queries zonder gebruikersinvoer
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);         // fetchAll() haalt alle rijen op als array
     }
 
     public function getById(int $id): array|false
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM users WHERE id = ?");
-        $stmt->execute([$id]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        $stmt = $this->pdo->prepare("SELECT * FROM users WHERE id = ?"); // prepare() maakt een veilige query (? = placeholder tegen SQL-injectie)
+        $stmt->execute([$id]);                                           // execute() voert de query uit en vult de ? in met $id
+        return $stmt->fetch(PDO::FETCH_ASSOC);                          // fetch() haalt één rij op als array
     }
 
     public function getByEmail(string $email): array|false
@@ -53,7 +47,7 @@ class UserModel
             return false;
         }
 
-        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT); // password_hash() hasht het wachtwoord veilig — nooit plaintext opslaan!
         $stmt = $this->pdo->prepare("INSERT INTO users (email, username, password) VALUES (?, ?, ?)");
         return $stmt->execute([$email, $username, $hashedPassword]);
     }
@@ -63,7 +57,7 @@ class UserModel
         $user = $this->getByEmail($email);
 
         if ($user) {
-            if (password_verify($password, $user['password'])) {
+            if (password_verify($password, $user['password'])) { // password_verify() vergelijkt het ingevoerde wachtwoord met de opgeslagen hash
                 return $user;
             }
         }
