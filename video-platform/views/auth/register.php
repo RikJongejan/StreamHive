@@ -26,7 +26,7 @@ require VIEWS_PATH . '/partials/header.php';
             </div>
         <?php endif; ?>
 
-        <form method="POST" action="<?= route('auth/register') ?>">
+        <form method="POST" action="<?= Helpers::route('auth/register') ?>">
             <div class="form-group">
                 <label>Email address</label>
                 <input class="input" type="email" name="email" placeholder="you@email.com" required autofocus>
@@ -53,7 +53,7 @@ require VIEWS_PATH . '/partials/header.php';
         </form>
 
         <div class="link">
-            Already have an account? <a href="<?= route('auth/login') ?>">Log in</a>
+            Already have an account? <a href="<?= Helpers::route('auth/login') ?>">Log in</a>
         </div>
 
     </div>
