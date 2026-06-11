@@ -1,16 +1,9 @@
 <?php
-// index.php - Front controller en enige toegangspunt van de applicatie
-// Bootstrapt de applicatie:
-// - Start sessie en laadt configuratie, helpers en auth
-// - Registreert de autoloader voor core/, models/, services/ en controllers/
-// - Legt alle routes vast en koppelt ze aan controllers
-// - Bepaalt welke route verwerkt wordt op basis van ?route= in de URL
-session_start();
+session_start(); // session_start() start de sessie zodat $_SESSION overal beschikbaar is — moet als eerste worden aangeroepen
 
 require_once __DIR__ . '/../app/config/app.php';
-require_once __DIR__ . '/../includes/helpers.php';
-require_once __DIR__ . '/../includes/auth.php';
 
+// autoloadClass wordt automatisch aangeroepen door PHP zodra een klasse nog niet geladen is
 function autoloadClass(string $class): void
 {
     $folders = [
@@ -22,14 +15,14 @@ function autoloadClass(string $class): void
 
     foreach ($folders as $folder) {
         $file = $folder . $class . '.php';
-        if (file_exists($file)) {
+        if (file_exists($file)) { // file_exists() controleert of het bestand bestaat voordat het geladen wordt
             require_once $file;
             return;
         }
     }
 }
 
-spl_autoload_register('autoloadClass');
+spl_autoload_register('autoloadClass'); // spl_autoload_register() registreert de autoloader — zo hoef je niet overal require_once te schrijven
 
 $pdo    = Database::getConnection();
 $router = new Router($pdo);
@@ -53,7 +46,7 @@ $router->add('user/update',   'UserController',    'update');
 $route = $_GET['route'] ?? '';
 
 if ($route === '') {
-    $route = isLoggedIn() ? 'video/index' : 'auth/login';
+    $route = Auth::isLoggedIn() ? 'video/index' : 'auth/login';
 }
 
 $router->dispatch($route);
