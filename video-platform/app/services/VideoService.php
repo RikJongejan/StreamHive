@@ -1,15 +1,9 @@
 <?php
-// VideoService.php - Service voor video-gerelateerde bedrijfslogica
-// Bevat de bedrijfslogica rondom video's:
-// - Video's ophalen en zoeken
-// - Uploaden met bestandsvalidatie en opslag
-// - Verwijderen inclusief bestanden op schijf
-// - Weergaveteller ophogen
-// - Aanbevelingen genereren
 class VideoService
 {
     private VideoModel $videoModel;
 
+    // __construct() wordt automatisch aangeroepen zodra je 'new VideoService($pdo)' schrijft
     public function __construct(PDO $pdo)
     {
         $this->videoModel = new VideoModel($pdo);
@@ -45,7 +39,7 @@ class VideoService
 
         $this->deleteFileIfExists(UPLOADS_PATH . '/videos/' . $video['filename']);
 
-        if (!empty($video['thumbnail'])) {
+        if (!empty($video['thumbnail'])) { // empty() controleert of de waarde leeg is
             $this->deleteFileIfExists(UPLOADS_PATH . '/thumbnails/' . $video['thumbnail']);
         }
 
@@ -54,8 +48,8 @@ class VideoService
 
     private function deleteFileIfExists(string $path): void
     {
-        if (is_file($path)) {
-            unlink($path);
+        if (is_file($path)) { // is_file() controleert of het bestand echt bestaat op de server
+            unlink($path);    // unlink() verwijdert het bestand van de server
         }
     }
 
@@ -79,7 +73,7 @@ class VideoService
                 $recommended[] = $video;
             }
 
-            if (count($recommended) >= $limit) {
+            if (count($recommended) >= $limit) { // count() telt het aantal items in een array
                 break;
             }
         }
@@ -99,7 +93,7 @@ class VideoService
 
     public function upload(int $userId, string $title, string $description, ?array $videoFile, ?array $thumbnailFile): array
     {
-        if (empty($title)) {
+        if (empty($title)) { // empty() controleert of de titel leeg is
             return ['success' => false, 'error' => 'Title is required.'];
         }
 
@@ -107,7 +101,7 @@ class VideoService
             return ['success' => false, 'error' => 'Video file is required.'];
         }
 
-        if ($videoFile['error'] !== UPLOAD_ERR_OK) {
+        if ($videoFile['error'] !== UPLOAD_ERR_OK) { // UPLOAD_ERR_OK betekent dat het bestand zonder fouten is geüpload
             return ['success' => false, 'error' => 'Video file is required.'];
         }
 
@@ -116,8 +110,8 @@ class VideoService
         }
 
         $allowedVideoTypes = ['video/mp4', 'video/webm', 'video/ogg'];
-        $videoType         = mime_content_type($videoFile['tmp_name']);
-        $videoTypeAllowed  = in_array($videoType, $allowedVideoTypes);
+        $videoType         = mime_content_type($videoFile['tmp_name']); // mime_content_type() controleert het echte bestandstype op basis van bestandsinhoud (veiliger dan de extensie)
+        $videoTypeAllowed  = in_array($videoType, $allowedVideoTypes); // in_array() controleert of het type in de lijst van toegestane types zit
 
         if ($videoTypeAllowed === false) {
             return ['success' => false, 'error' => 'Only MP4, WebM or OGG is allowed.'];
@@ -136,9 +130,9 @@ class VideoService
                     return ['success' => false, 'error' => 'Thumbnail must be JPG, PNG or WebP.'];
                 }
 
-                $imageExtension = pathinfo($thumbnailFile['name'], PATHINFO_EXTENSION);
-                $thumbnailName  = uniqid('thumb_', true) . '.' . $imageExtension;
-                move_uploaded_file($thumbnailFile['tmp_name'], UPLOADS_PATH . '/thumbnails/' . $thumbnailName);
+                $imageExtension = pathinfo($thumbnailFile['name'], PATHINFO_EXTENSION); // pathinfo() haalt de bestandsextensie op (bijv. "jpg")
+                $thumbnailName  = uniqid('thumb_', true) . '.' . $imageExtension;       // uniqid() genereert een unieke bestandsnaam op basis van de tijd
+                move_uploaded_file($thumbnailFile['tmp_name'], UPLOADS_PATH . '/thumbnails/' . $thumbnailName); // move_uploaded_file() verplaatst het bestand van tijdelijke naar definitieve locatie
             }
         }
 
