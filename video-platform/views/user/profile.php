@@ -39,7 +39,7 @@ require VIEWS_PATH . '/partials/header.php';
 
                 <div class="profile-stats">
                     <div class="stat"><b><?= count($videos) ?></b><span>Videos</span></div>
-                    <div class="stat"><b><?= formatCount($subscriberCount) ?></b><span>Subscribers</span></div>
+                    <div class="stat"><b><?= Helpers::formatCount($subscriberCount) ?></b><span>Subscribers</span></div>
                     <?php if ($isOwn): ?>
                         <div class="stat"><b><?= count($subscriptions) ?></b><span>Subscriptions</span></div>
                     <?php endif; ?>
@@ -48,10 +48,10 @@ require VIEWS_PATH . '/partials/header.php';
 
             <div class="profile-actions">
                 <?php if ($isOwn): ?>
-                    <a class="btn btn-ghost" href="<?= route('user/settings') ?>"><i class="fa-solid fa-pen"></i> Edit profile</a>
-                    <a class="btn btn-honey" href="<?= route('video/upload') ?>"><i class="fa-solid fa-cloud-arrow-up"></i> Upload</a>
+                    <a class="btn btn-ghost" href="<?= Helpers::route('user/settings') ?>"><i class="fa-solid fa-pen"></i> Edit profile</a>
+                    <a class="btn btn-honey" href="<?= Helpers::route('video/upload') ?>"><i class="fa-solid fa-cloud-arrow-up"></i> Upload</a>
                 <?php else: ?>
-                    <form method="POST" action="<?= route('subscription/toggle') ?>">
+                    <form method="POST" action="<?= Helpers::route('subscription/toggle') ?>">
                         <input type="hidden" name="leader_id" value="<?= $profileUser['id'] ?>">
                         <button type="submit" class="sub-btn <?= $userSubscribed ? 'subscribed' : '' ?>">
                             <i class="fa-solid <?= $userSubscribed ? 'fa-check' : 'fa-bell' ?>"></i>
@@ -78,7 +78,7 @@ require VIEWS_PATH . '/partials/header.php';
                     <h3><?= $isOwn ? 'You don\'t have any videos yet' : htmlspecialchars($profileUser['username']) . ' doesn\'t have any videos yet' ?></h3>
                     <?php if ($isOwn): ?>
                         <p>Upload your first video and fill your channel.</p>
-                        <a class="btn btn-honey" href="<?= route('video/upload') ?>">
+                        <a class="btn btn-honey" href="<?= Helpers::route('video/upload') ?>">
                             <i class="fa-solid fa-cloud-arrow-up"></i> Upload now
                         </a>
                     <?php endif; ?>
@@ -97,7 +97,7 @@ require VIEWS_PATH . '/partials/header.php';
             <?php else: ?>
                 <div class="sub-list">
                     <?php foreach ($subscribers as $subscriber): ?>
-                        <a class="sub-chip" href="<?= route('user/profile', ['id' => $subscriber['id']]) ?>">
+                        <a class="sub-chip" href="<?= Helpers::route('user/profile', ['id' => $subscriber['id']]) ?>">
                             <span class="avatar-mini"><?= htmlspecialchars(strtoupper(substr($subscriber['username'], 0, 1))) ?></span>
                             <div>
                                 <b><?= htmlspecialchars($subscriber['username']) ?></b><br>
@@ -117,7 +117,7 @@ require VIEWS_PATH . '/partials/header.php';
                 <?php else: ?>
                     <div class="sub-list">
                         <?php foreach ($subscriptions as $followedChannel): ?>
-                            <a class="sub-chip" href="<?= route('user/profile', ['id' => $followedChannel['id']]) ?>">
+                            <a class="sub-chip" href="<?= Helpers::route('user/profile', ['id' => $followedChannel['id']]) ?>">
                                 <span class="avatar-mini"><?= htmlspecialchars(strtoupper(substr($followedChannel['username'], 0, 1))) ?></span>
                                 <div>
                                     <b><?= htmlspecialchars($followedChannel['username']) ?></b><br>
