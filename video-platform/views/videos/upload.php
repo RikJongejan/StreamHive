@@ -13,7 +13,7 @@ require VIEWS_PATH . '/partials/header.php';
 <main class="page">
     <div class="container">
 
-        <a class="back-link" href="<?= route('video/index') ?>">
+        <a class="back-link" href="<?= Helpers::route('video/index') ?>">
             <i class="fa-solid fa-arrow-left"></i> Back to home
         </a>
 
@@ -28,7 +28,7 @@ require VIEWS_PATH . '/partials/header.php';
                 </div>
             <?php endif; ?>
 
-            <form method="POST" action="<?= route('video/upload') ?>" enctype="multipart/form-data">
+            <form method="POST" action="<?= Helpers::route('video/upload') ?>" enctype="multipart/form-data">
 
                 <div class="form-group">
                     <label>Title</label>
