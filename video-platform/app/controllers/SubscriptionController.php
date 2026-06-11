@@ -14,7 +14,7 @@ class SubscriptionController
 
     public function toggle(): void
     {
-        requireLogin();
+        Auth::requireLogin();
 
         if (isset($_POST['leader_id'])) {
             $leaderId = (int) $_POST['leader_id'];
@@ -34,9 +34,9 @@ class SubscriptionController
 
         // Na het abonneren terugsturen naar de video geeft een betere ervaring dan altijd naar het profiel gaan
         if ($videoId > 0) {
-            redirect(route('video/show', ['id' => $videoId]));
+            Helpers::redirect(Helpers::route('video/show', ['id' => $videoId]));
         }
 
-        redirect(route('user/profile', ['id' => $leaderId]));
+        Helpers::redirect(Helpers::route('user/profile', ['id' => $leaderId]));
     }
 }
