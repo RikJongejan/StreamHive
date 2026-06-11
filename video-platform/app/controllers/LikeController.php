@@ -14,7 +14,7 @@ class LikeController
 
     public function toggle(): void
     {
-        requireLogin();
+        Auth::requireLogin();
 
         if (isset($_POST['video_id'])) {
             $videoId = (int) $_POST['video_id'];
@@ -26,6 +26,6 @@ class LikeController
             $this->likeService->toggle((int) $_SESSION['user_id'], $videoId);
         }
 
-        redirect(route('video/show', ['id' => $videoId]));
+        Helpers::redirect(Helpers::route('video/show', ['id' => $videoId]));
     }
 }
