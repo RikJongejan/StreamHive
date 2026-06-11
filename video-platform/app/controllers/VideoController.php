@@ -1,11 +1,4 @@
 <?php
-// VideoController.php - Controller voor video's
-// Beheert alle video-gerelateerde pagina's en acties:
-// - Overzichtspagina met optioneel categoriefilter (index)
-// - Videopagina met reacties, likes en aanbevelingen (show)
-// - Zoekpagina (search)
-// - Uploadformulier en verwerking (upload)
-// - Video verwijderen (delete)
 class VideoController
 {
     private VideoService $videoService;
@@ -14,6 +7,7 @@ class VideoController
     private SubscriptionService $subscriptionService;
     private CategoryService $categoryService;
 
+    // __construct() wordt automatisch aangeroepen zodra je 'new VideoController($pdo)' schrijft
     public function __construct(PDO $pdo)
     {
         $this->videoService        = new VideoService($pdo);
@@ -25,11 +19,11 @@ class VideoController
 
     public function index(): void
     {
-        requireLogin();
+        Auth::requireLogin();
 
         $categories = $this->categoryService->getAllCategories();
 
-        if (isset($_GET['cat'])) {
+        if (isset($_GET['cat'])) { // isset() controleert of de URL-parameter bestaat
             $activeCategory = (int) $_GET['cat'];
         } else {
             $activeCategory = 0;
@@ -46,7 +40,7 @@ class VideoController
 
     public function show(): void
     {
-        requireLogin();
+        Auth::requireLogin();
 
         if (isset($_GET['id'])) {
             $id = (int) $_GET['id'];
@@ -57,7 +51,7 @@ class VideoController
         $video = $this->videoService->getVideo($id);
 
         if (!$video) {
-            http_response_code(404);
+            http_response_code(404); // http_response_code() stuurt een HTTP-statuscode naar de browser (404 = pagina niet gevonden)
             echo 'Video not found.';
             return;
         }
@@ -92,7 +86,7 @@ class VideoController
         }
 
         if ($uploaderName !== '') {
-            $uploaderInitial = strtoupper(substr($uploaderName, 0, 1));
+            $uploaderInitial = strtoupper(substr($uploaderName, 0, 1)); // strtoupper() maakt hoofdletter, substr(string, 0, 1) haalt het eerste teken op
         } else {
             $uploaderInitial = '?';
         }
@@ -110,10 +104,10 @@ class VideoController
 
     public function search(): void
     {
-        requireLogin();
+        Auth::requireLogin();
 
         if (isset($_GET['query'])) {
-            $query = sanitize($_GET['query']);
+            $query = Helpers::sanitize($_GET['query']); // sanitize() verwijdert gevaarlijke HTML-tekens uit de zoekterm
         } else {
             $query = '';
         }
@@ -129,17 +123,17 @@ class VideoController
 
     public function upload(): void
     {
-        requireLogin();
+        Auth::requireLogin();
 
         $error      = '';
         $categories = $this->categoryService->getAllCategories();
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $userId      = (int) $_SESSION['user_id'];
-            $title       = sanitize($_POST['title'] ?? '');
-            $description = sanitize($_POST['description'] ?? '');
+            $title       = Helpers::sanitize($_POST['title'] ?? '');
+            $description = Helpers::sanitize($_POST['description'] ?? '');
 
-            if (isset($_FILES['video'])) {
+            if (isset($_FILES['video'])) { // $_FILES bevat de geüploade bestanden
                 $videoFile = $_FILES['video'];
             } else {
                 $videoFile = null;
@@ -155,10 +149,10 @@ class VideoController
 
             if ($result['success']) {
                 $selectedCategories = $_POST['categories'] ?? [];
-                $newCategoryNames   = sanitize($_POST['new_categories'] ?? '');
+                $newCategoryNames   = Helpers::sanitize($_POST['new_categories'] ?? '');
 
                 $this->categoryService->saveForVideo($result['videoId'], $selectedCategories, $newCategoryNames);
-                redirect(route('video/index'));
+                Helpers::redirect(Helpers::route('video/index'));
             }
 
             $error = $result['error'];
@@ -170,7 +164,7 @@ class VideoController
     // Eigenaarschapscontrole zit in de service zodat de controller geen bedrijfslogica bevat
     public function delete(): void
     {
-        requireLogin();
+        Auth::requireLogin();
 
         if (isset($_POST['video_id'])) {
             $videoId = (int) $_POST['video_id'];
@@ -180,6 +174,6 @@ class VideoController
 
         $this->videoService->delete($videoId, (int) $_SESSION['user_id']);
 
-        redirect(route('user/profile'));
+        Helpers::redirect(Helpers::route('user/profile'));
     }
 }
