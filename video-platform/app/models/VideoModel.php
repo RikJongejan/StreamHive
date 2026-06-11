@@ -1,16 +1,9 @@
 <?php
-// VideoModel.php - Model voor video's
-// Beheert alle video-gerelateerde databaseoperaties:
-// - Video's ophalen (alles, per gebruiker, per categorie, op id)
-// - Video uploaden en verwijderen
-// - Weergaven bijhouden
-// - Zoeken in titel en beschrijving
-// - Categorieën ophalen via de video_category koppeltabel
-// Werkt met de 'videos' en 'video_category' tabellen in de database
 class VideoModel
 {
     private PDO $pdo;
 
+    // __construct() wordt automatisch aangeroepen zodra je 'new VideoModel($pdo)' schrijft
     public function __construct(PDO $pdo)
     {
         $this->pdo = $pdo;
@@ -24,8 +17,8 @@ class VideoModel
             FROM videos
             JOIN users ON videos.user_id = users.id
             ORDER BY videos.created_at DESC
-        ");
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        "); // query() voor vaste queries zonder gebruikersinvoer
+        return $stmt->fetchAll(PDO::FETCH_ASSOC); // fetchAll() haalt alle rijen op als array
     }
 
     public function getById(int $id): array|false
@@ -35,9 +28,9 @@ class VideoModel
             FROM videos
             JOIN users ON videos.user_id = users.id
             WHERE videos.id = ?
-        ");
-        $stmt->execute([$id]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        "); // prepare() maakt een veilige query (? = placeholder tegen SQL-injectie)
+        $stmt->execute([$id]); // execute() voert de query uit en vult de ? in
+        return $stmt->fetch(PDO::FETCH_ASSOC); // fetch() haalt één rij op als array
     }
 
     public function getByUser(int $userId): array
@@ -63,7 +56,7 @@ class VideoModel
             return false;
         }
 
-        $newId = (int) $this->pdo->lastInsertId();
+        $newId = (int) $this->pdo->lastInsertId(); // lastInsertId() geeft het auto-increment ID terug van de net ingevoegde rij
         return $newId;
     }
 
@@ -81,7 +74,7 @@ class VideoModel
 
     public function search(string $query): array
     {
-        $term = '%' . $query . '%';
+        $term = '%' . $query . '%'; // % is een SQL-wildcard: zoekt alles dat de query bevat
         $stmt = $this->pdo->prepare("
             SELECT videos.*, users.username AS uploader
             FROM videos
