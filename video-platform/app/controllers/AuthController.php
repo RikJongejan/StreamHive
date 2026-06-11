@@ -1,13 +1,9 @@
 <?php
-// AuthController.php - Controller voor authenticatie
-// Beheert inloggen, registreren en uitloggen:
-// - Loginformulier weergeven en verwerken (login)
-// - Registratieformulier weergeven en verwerken (register)
-// - Sessie beëindigen en doorverwijzen (logout)
 class AuthController
 {
     private AuthService $authService;
 
+    // __construct() wordt automatisch aangeroepen zodra je 'new AuthController($pdo)' schrijft
     public function __construct(PDO $pdo)
     {
         $this->authService = new AuthService($pdo);
@@ -17,9 +13,9 @@ class AuthController
     {
         $error = '';
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if (isset($_POST['email'])) {
-                $email = trim($_POST['email']);
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') { // $_SERVER['REQUEST_METHOD'] controleert of het formulier verzonden is via POST
+            if (isset($_POST['email'])) { // isset() controleert of het veld bestaat en niet null is
+                $email = trim($_POST['email']); // trim() verwijdert spaties aan begin en einde van de invoer
             } else {
                 $email = '';
             }
@@ -33,8 +29,8 @@ class AuthController
             $result = $this->authService->login($email, $password);
 
             if ($result['success']) {
-                setUserSession($result['user']);
-                redirect(route('video/index'));
+                Helpers::setUserSession($result['user']);
+                Helpers::redirect(Helpers::route('video/index'));
             }
 
             $error = $result['error'];
@@ -75,8 +71,8 @@ class AuthController
             $result = $this->authService->register($email, $username, $password, $confirmPassword);
 
             if ($result['success']) {
-                setUserSession($result['user']);
-                redirect(route('video/index'));
+                Helpers::setUserSession($result['user']);
+                Helpers::redirect(Helpers::route('video/index'));
             }
 
             $error = $result['error'];
@@ -87,7 +83,7 @@ class AuthController
 
     public function logout(): void
     {
-        session_destroy();
-        redirect(route('auth/login'));
+        session_destroy(); // session_destroy() vernietigt de sessie volledig — alle $_SESSION gegevens worden gewist (uitloggen)
+        Helpers::redirect(Helpers::route('auth/login'));
     }
 }
