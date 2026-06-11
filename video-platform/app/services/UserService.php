@@ -1,12 +1,9 @@
 <?php
-// UserService.php - Service voor gebruikersbeheer
-// Bevat de bedrijfslogica voor gebruikersprofielen:
-// - Profiel ophalen
-// - Profielgegevens bijwerken inclusief avatar-upload en validatie
 class UserService
 {
     private UserModel $userModel;
 
+    // __construct() wordt automatisch aangeroepen zodra je 'new UserService($pdo)' schrijft
     public function __construct(PDO $pdo)
     {
         $this->userModel = new UserModel($pdo);
@@ -37,10 +34,10 @@ class UserService
         $imageName = $currentImage;
 
         if ($imageFile !== null) {
-            if ($imageFile['error'] === UPLOAD_ERR_OK) {
+            if ($imageFile['error'] === UPLOAD_ERR_OK) { // UPLOAD_ERR_OK betekent dat het bestand zonder fouten is geüpload
                 $allowedTypes     = ['image/jpeg', 'image/png', 'image/webp'];
-                $imageType        = mime_content_type($imageFile['tmp_name']);
-                $imageTypeAllowed = in_array($imageType, $allowedTypes);
+                $imageType        = mime_content_type($imageFile['tmp_name']); // mime_content_type() controleert het echte bestandstype op basis van de bestandsinhoud (veiliger dan de extensie)
+                $imageTypeAllowed = in_array($imageType, $allowedTypes); // in_array() controleert of het type in de lijst van toegestane types zit
 
                 if ($imageTypeAllowed === false) {
                     return ['success' => false, 'error' => 'Avatar must be JPG, PNG or WebP.'];
@@ -48,13 +45,13 @@ class UserService
 
                 $uploadDirectory = UPLOADS_PATH . '/avatars';
 
-                if (!is_dir($uploadDirectory)) {
-                    mkdir($uploadDirectory, 0777, true);
+                if (!is_dir($uploadDirectory)) { // is_dir() controleert of de map bestaat
+                    mkdir($uploadDirectory, 0777, true); // mkdir() maakt de map aan (0777 = rechten, true = ook tussenliggende mappen aanmaken)
                 }
 
-                $extension = pathinfo($imageFile['name'], PATHINFO_EXTENSION);
-                $imageName = uniqid('avatar_', true) . '.' . $extension;
-                move_uploaded_file($imageFile['tmp_name'], $uploadDirectory . '/' . $imageName);
+                $extension = pathinfo($imageFile['name'], PATHINFO_EXTENSION); // pathinfo() haalt de bestandsextensie op (bijv. "jpg")
+                $imageName = uniqid('avatar_', true) . '.' . $extension;       // uniqid() genereert een unieke naam op basis van de tijd zodat bestanden elkaar niet overschrijven
+                move_uploaded_file($imageFile['tmp_name'], $uploadDirectory . '/' . $imageName); // move_uploaded_file() verplaatst het tijdelijk opgeslagen bestand naar de definitieve locatie
             }
         }
 
