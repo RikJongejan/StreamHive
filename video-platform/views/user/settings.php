@@ -13,7 +13,7 @@ require VIEWS_PATH . '/partials/header.php';
 <main class="page">
     <div class="container">
 
-        <a class="back-link" href="<?= route('user/profile') ?>">
+        <a class="back-link" href="<?= Helpers::route('user/profile') ?>">
             <i class="fa-solid fa-arrow-left"></i> Back to my channel
         </a>
 
@@ -28,7 +28,7 @@ require VIEWS_PATH . '/partials/header.php';
                 </div>
             <?php endif; ?>
 
-            <form method="POST" action="<?= route('user/update') ?>" enctype="multipart/form-data">
+            <form method="POST" action="<?= Helpers::route('user/update') ?>" enctype="multipart/form-data">
 
                 <div class="form-group" style="display:flex;align-items:center;gap:16px;">
                     <?php if (!empty($user['profile_image'])): ?>
