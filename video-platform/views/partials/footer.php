@@ -7,7 +7,7 @@ $hideNav = $hideNav ?? false;
     <?php if (!$hideNav): ?>
     <footer class="site-footer">
         <div class="container">
-            <a class="brand" href="<?= route('video/index') ?>">
+            <a class="brand" href="<?= Helpers::route('video/index') ?>">
                 <img src="<?= ASSETS_URL ?>/images/logo.png" alt="StreamHive logo"
                      onerror="this.onerror=null;this.src='<?= ASSETS_URL ?>/images/logo.svg'">
                 <span><span class="b-stream">Stream</span><span class="b-hive">Hive</span></span>
