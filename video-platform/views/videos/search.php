@@ -12,7 +12,7 @@ require VIEWS_PATH . '/partials/header.php';
 <main class="page">
     <div class="container">
 
-        <a class="back-link" href="<?= route('video/index') ?>">
+        <a class="back-link" href="<?= Helpers::route('video/index') ?>">
             <i class="fa-solid fa-arrow-left"></i> Back to home
         </a>
 
@@ -34,7 +34,7 @@ require VIEWS_PATH . '/partials/header.php';
                 <?php $beeWrap = null; require VIEWS_PATH . '/partials/bee.php'; ?>
                 <h3>Nothing found</h3>
                 <p>No videos for &ldquo;<?= htmlspecialchars($query) ?>&rdquo;. Try a different word.</p>
-                <a class="btn btn-ghost" href="<?= route('video/index') ?>">Back to home</a>
+                <a class="btn btn-ghost" href="<?= Helpers::route('video/index') ?>">Back to home</a>
             </div>
         <?php elseif (!empty($videos)): ?>
             <div class="video-grid">
