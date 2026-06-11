@@ -1,14 +1,9 @@
 <?php
-// CommentModel.php - Model voor reacties op video's
-// Beheert alle commentaren van gebruikers:
-// - Reactie plaatsen onder een video
-// - Reactie verwijderen
-// - Reacties ophalen inclusief gebruikersnaam (via JOIN)
-// Werkt met de 'comments' tabel in de database
 class CommentModel
 {
     private PDO $pdo;
 
+    // __construct() wordt automatisch aangeroepen zodra je 'new CommentModel($pdo)' schrijft
     public function __construct(PDO $pdo)
     {
         $this->pdo = $pdo;
@@ -23,9 +18,9 @@ class CommentModel
             JOIN users ON comments.user_id = users.id
             WHERE comments.video_id = ?
             ORDER BY comments.created_at ASC
-        ");
-        $stmt->execute([$videoId]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        "); // prepare() maakt een veilige query (? = placeholder tegen SQL-injectie)
+        $stmt->execute([$videoId]); // execute() voert de query uit en vult de ? in
+        return $stmt->fetchAll(PDO::FETCH_ASSOC); // fetchAll() haalt alle rijen op als array
     }
 
     public function post(int $userId, int $videoId, string $content): bool
