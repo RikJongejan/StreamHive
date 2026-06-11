@@ -25,7 +25,7 @@ require VIEWS_PATH . '/partials/header.php';
 <main class="page">
     <div class="container watch-wide">
 
-        <a class="back-link" href="<?= route('video/index') ?>">
+        <a class="back-link" href="<?= Helpers::route('video/index') ?>">
             <i class="fa-solid fa-arrow-left"></i> Back to home
         </a>
 
@@ -45,18 +45,18 @@ require VIEWS_PATH . '/partials/header.php';
 
                 <div class="watch-bar">
                     <div class="uploader-block">
-                        <a href="<?= route('user/profile', ['id' => $video['user_id']]) ?>">
+                        <a href="<?= Helpers::route('user/profile', ['id' => $video['user_id']]) ?>">
                             <span class="avatar-mini"><?= htmlspecialchars($uploaderInitial) ?></span>
                         </a>
                         <div>
-                            <a class="u-name" href="<?= route('user/profile', ['id' => $video['user_id']]) ?>">
+                            <a class="u-name" href="<?= Helpers::route('user/profile', ['id' => $video['user_id']]) ?>">
                                 <?= htmlspecialchars($uploaderName) ?>
                             </a>
-                            <div class="u-subs"><?= formatCount($subscriberCount) ?> subscribers</div>
+                            <div class="u-subs"><?= Helpers::formatCount($subscriberCount) ?> subscribers</div>
                         </div>
 
                         <?php if (!$isOwnVideo): ?>
-                            <form method="POST" action="<?= route('subscription/toggle') ?>" style="margin-left:8px;">
+                            <form method="POST" action="<?= Helpers::route('subscription/toggle') ?>" style="margin-left:8px;">
                                 <input type="hidden" name="leader_id" value="<?= $video['user_id'] ?>">
                                 <input type="hidden" name="video_id" value="<?= $video['id'] ?>">
                                 <button type="submit" class="sub-btn <?= $userSubscribed ? 'subscribed' : '' ?>">
@@ -68,11 +68,11 @@ require VIEWS_PATH . '/partials/header.php';
                     </div>
 
                     <div class="watch-actions">
-                        <form class="like-form" method="POST" action="<?= route('like/toggle') ?>">
+                        <form class="like-form" method="POST" action="<?= Helpers::route('like/toggle') ?>">
                             <input type="hidden" name="video_id" value="<?= $video['id'] ?>">
                             <button type="submit" class="like-btn <?= $userLiked ? 'liked' : '' ?>">
                                 <i class="<?= $userLiked ? 'fa-solid' : 'fa-regular' ?> fa-thumbs-up"></i>
-                                <?= formatCount($likeCount) ?>
+                                <?= Helpers::formatCount($likeCount) ?>
                             </button>
                         </form>
                     </div>
@@ -80,9 +80,9 @@ require VIEWS_PATH . '/partials/header.php';
 
                 <div class="video-desc">
                     <div class="desc-meta">
-                        <span><i class="fa-solid fa-eye"></i> <?= formatCount((int) $video['views']) ?> views</span>
-                        <span><i class="fa-solid fa-clock"></i> <?= timeAgo($video['created_at']) ?></span>
-                        <span><i class="fa-solid fa-thumbs-up"></i> <?= formatCount($likeCount) ?> likes</span>
+                        <span><i class="fa-solid fa-eye"></i> <?= Helpers::formatCount((int) $video['views']) ?> views</span>
+                        <span><i class="fa-solid fa-clock"></i> <?= Helpers::timeAgo($video['created_at']) ?></span>
+                        <span><i class="fa-solid fa-thumbs-up"></i> <?= Helpers::formatCount($likeCount) ?> likes</span>
                     </div>
 
                     <?php if (!empty($video['description'])): ?>
@@ -105,7 +105,7 @@ require VIEWS_PATH . '/partials/header.php';
                 <section class="comments">
                     <h2><i class="fa-solid fa-comments"></i> <?= count($comments) ?> comment<?= count($comments) === 1 ? '' : 's' ?></h2>
 
-                    <form class="comment-form" method="POST" action="<?= route('comment/post') ?>">
+                    <form class="comment-form" method="POST" action="<?= Helpers::route('comment/post') ?>">
                         <span class="avatar-mini"><?= htmlspecialchars($myInitial) ?></span>
                         <div class="cf-body">
                             <input type="hidden" name="video_id" value="<?= $video['id'] ?>">
@@ -128,7 +128,7 @@ require VIEWS_PATH . '/partials/header.php';
                                 <div>
                                     <div class="c-head">
                                         <span class="c-name"><?= htmlspecialchars($comment['username']) ?></span>
-                                        <span class="c-time"><?= timeAgo($comment['created_at']) ?></span>
+                                        <span class="c-time"><?= Helpers::timeAgo($comment['created_at']) ?></span>
                                     </div>
                                     <div class="c-text"><?= nl2br(htmlspecialchars($comment['content'])) ?></div>
                                 </div>
@@ -147,7 +147,7 @@ require VIEWS_PATH . '/partials/header.php';
                     <p style="color: var(--text-mute);">No other videos yet.</p>
                 <?php else: ?>
                     <?php foreach ($recommended as $rec): ?>
-                        <a class="rec-card" href="<?= route('video/show', ['id' => $rec['id']]) ?>">
+                        <a class="rec-card" href="<?= Helpers::route('video/show', ['id' => $rec['id']]) ?>">
                             <div class="rec-thumb">
                                 <?php if (!empty($rec['thumbnail'])): ?>
                                     <img src="<?= UPLOADS_URL ?>/thumbnails/<?= htmlspecialchars($rec['thumbnail']) ?>"
@@ -155,12 +155,12 @@ require VIEWS_PATH . '/partials/header.php';
                                 <?php else: ?>
                                     <div class="no-thumb"><i class="fa-solid fa-film"></i></div>
                                 <?php endif; ?>
-                                <span class="views-badge"><i class="fa-solid fa-eye"></i> <?= formatCount((int) $rec['views']) ?></span>
+                                <span class="views-badge"><i class="fa-solid fa-eye"></i> <?= Helpers::formatCount((int) $rec['views']) ?></span>
                             </div>
                             <div class="rec-info">
                                 <h4><?= htmlspecialchars($rec['title']) ?></h4>
                                 <span><?= htmlspecialchars($rec['uploader'] ?? '') ?></span>
-                                <span><?= formatCount((int) $rec['views']) ?> views &middot; <?= timeAgo($rec['created_at']) ?></span>
+                                <span><?= Helpers::formatCount((int) $rec['views']) ?> views &middot; <?= Helpers::timeAgo($rec['created_at']) ?></span>
                             </div>
                         </a>
                     <?php endforeach; ?>
