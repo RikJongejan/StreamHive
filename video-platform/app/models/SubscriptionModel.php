@@ -1,15 +1,9 @@
 <?php
-// SubscriptionModel.php - Model voor abonnementen tussen gebruikers
-// Beheert het volgen en ontvolgen van kanalen:
-// - Abonneren en opzeggen
-// - Controleren of een gebruiker al geabonneerd is
-// - Abonneeaantal ophalen
-// - Lijst van abonnees en abonnementen ophalen
-// Werkt met de 'subscriptions' tabel in de database
 class SubscriptionModel
 {
     private PDO $pdo;
 
+    // __construct() wordt automatisch aangeroepen zodra je 'new SubscriptionModel($pdo)' schrijft
     public function __construct(PDO $pdo)
     {
         $this->pdo = $pdo;
@@ -17,8 +11,8 @@ class SubscriptionModel
 
     public function subscribe(int $subscriberId, int $leaderId): bool
     {
-        $stmt = $this->pdo->prepare("INSERT INTO subscriptions (subscriber_id, leader_id) VALUES (?, ?)");
-        return $stmt->execute([$subscriberId, $leaderId]);
+        $stmt = $this->pdo->prepare("INSERT INTO subscriptions (subscriber_id, leader_id) VALUES (?, ?)"); // prepare() maakt een veilige query (? = placeholder tegen SQL-injectie)
+        return $stmt->execute([$subscriberId, $leaderId]); // execute() voert de query uit en vult de ?'s in
     }
 
     public function unsubscribe(int $subscriberId, int $leaderId): bool
@@ -31,7 +25,7 @@ class SubscriptionModel
     {
         $stmt = $this->pdo->prepare("SELECT id FROM subscriptions WHERE subscriber_id = ? AND leader_id = ?");
         $stmt->execute([$subscriberId, $leaderId]);
-        $row = $stmt->fetch();
+        $row = $stmt->fetch(); // fetch() haalt één rij op — geeft false als er geen rij gevonden is
 
         if ($row) {
             return true;
@@ -44,7 +38,7 @@ class SubscriptionModel
     {
         $stmt  = $this->pdo->prepare("SELECT COUNT(*) FROM subscriptions WHERE leader_id = ?");
         $stmt->execute([$leaderId]);
-        $count = $stmt->fetchColumn();
+        $count = $stmt->fetchColumn(); // fetchColumn() haalt de waarde van één kolom op — handig voor COUNT(*)
         return (int) $count;
     }
 
@@ -58,7 +52,7 @@ class SubscriptionModel
             ORDER BY subscriptions.created_at DESC
         ");
         $stmt->execute([$leaderId]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC); // fetchAll() haalt alle rijen op als array
     }
 
     public function getSubscriptions(int $subscriberId): array
