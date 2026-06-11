@@ -14,7 +14,7 @@ class CommentController
 
     public function post(): void
     {
-        requireLogin();
+        Auth::requireLogin();
 
         if (isset($_POST['video_id'])) {
             $videoId = (int) $_POST['video_id'];
@@ -32,6 +32,6 @@ class CommentController
             $this->commentService->addComment((int) $_SESSION['user_id'], $videoId, $content);
         }
 
-        redirect(route('video/show', ['id' => $videoId]));
+        Helpers::redirect(Helpers::route('video/show', ['id' => $videoId]));
     }
 }
