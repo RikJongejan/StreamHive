@@ -10,7 +10,7 @@ $uploaderInitial = $uploaderName !== '' ? strtoupper(substr($uploaderName, 0, 1)
 ?>
 <div class="video-card">
     <div class="thumb">
-        <a class="thumb-link" href="<?= route('video/show', ['id' => $card['id']]) ?>">
+        <a class="thumb-link" href="<?= Helpers::route('video/show', ['id' => $card['id']]) ?>">
             <?php if (!empty($card['thumbnail'])): ?>
                 <img src="<?= UPLOADS_URL ?>/thumbnails/<?= htmlspecialchars($card['thumbnail']) ?>"
                      alt="<?= htmlspecialchars($card['title']) ?>" loading="lazy">
@@ -20,11 +20,11 @@ $uploaderInitial = $uploaderName !== '' ? strtoupper(substr($uploaderName, 0, 1)
             <div class="play-overlay"><i class="fa-solid fa-circle-play"></i></div>
         </a>
 
-        <span class="views-badge"><i class="fa-solid fa-eye"></i> <?= formatCount((int) $card['views']) ?></span>
+        <span class="views-badge"><i class="fa-solid fa-eye"></i> <?= Helpers::formatCount((int) $card['views']) ?></span>
 
         <?php if ($cardOwner): ?>
             <div class="owner-actions">
-                <form method="POST" action="<?= route('video/delete') ?>"
+                <form method="POST" action="<?= Helpers::route('video/delete') ?>"
                       data-confirm="Are you sure you want to delete this video?">
                     <input type="hidden" name="video_id" value="<?= $card['id'] ?>">
                     <button type="submit" class="icon-btn danger" title="Delete">
@@ -36,15 +36,15 @@ $uploaderInitial = $uploaderName !== '' ? strtoupper(substr($uploaderName, 0, 1)
     </div>
 
     <div class="video-meta">
-        <a href="<?= route('video/show', ['id' => $card['id']]) ?>">
+        <a href="<?= Helpers::route('video/show', ['id' => $card['id']]) ?>">
             <h3><?= htmlspecialchars($card['title']) ?></h3>
         </a>
-        <a class="uploader" href="<?= route('user/profile', ['id' => $card['user_id']]) ?>">
+        <a class="uploader" href="<?= Helpers::route('user/profile', ['id' => $card['user_id']]) ?>">
             <span class="avatar-mini"><?= htmlspecialchars($uploaderInitial) ?></span>
             <span><?= htmlspecialchars($uploaderName) ?></span>
             <?php if (!empty($card['created_at'])): ?>
                 <span class="dot"></span>
-                <span><?= timeAgo($card['created_at']) ?></span>
+                <span><?= Helpers::timeAgo($card['created_at']) ?></span>
             <?php endif; ?>
         </a>
     </div>
