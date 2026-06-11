@@ -19,10 +19,10 @@ require VIEWS_PATH . '/partials/header.php';
                 <h1>Welcome to the <span class="accent">Hive</span></h1>
                 <p>Discover, share, and connect. Thousands of videos, all in one place &mdash; as busy as a beehive.</p>
                 <div class="hero-actions">
-                    <a class="btn btn-honey btn-lg" href="<?= route('video/upload') ?>">
+                    <a class="btn btn-honey btn-lg" href="<?= Helpers::route('video/upload') ?>">
                         <i class="fa-solid fa-cloud-arrow-up"></i> Upload your video
                     </a>
-                    <a class="btn btn-ghost btn-lg" href="<?= route('user/profile') ?>">
+                    <a class="btn btn-ghost btn-lg" href="<?= Helpers::route('user/profile') ?>">
                         <i class="fa-solid fa-user"></i> My channel
                     </a>
                 </div>
@@ -33,12 +33,12 @@ require VIEWS_PATH . '/partials/header.php';
 
         <?php if (!empty($categories)): ?>
             <div class="cat-bar">
-                <a class="cat-chip-link <?= $activeCategory === 0 ? 'active' : '' ?>" href="<?= route('video/index') ?>">
+                <a class="cat-chip-link <?= $activeCategory === 0 ? 'active' : '' ?>" href="<?= Helpers::route('video/index') ?>">
                     <i class="fa-solid fa-border-all"></i> All
                 </a>
                 <?php foreach ($categories as $category): ?>
                     <a class="cat-chip-link <?= $activeCategory === (int) $category['id'] ? 'active' : '' ?>"
-                       href="<?= route('video/index', ['cat' => $category['id']]) ?>">
+                       href="<?= Helpers::route('video/index', ['cat' => $category['id']]) ?>">
                         <?= htmlspecialchars($category['name']) ?>
                     </a>
                 <?php endforeach; ?>
@@ -61,7 +61,7 @@ require VIEWS_PATH . '/partials/header.php';
                 <?php $beeWrap = null; require VIEWS_PATH . '/partials/bee.php'; ?>
                 <h3><?= $activeCategory > 0 ? 'No videos in this category yet' : 'No videos in the hive yet' ?></h3>
                 <p>Be the first to share something with the swarm.</p>
-                <a class="btn btn-honey" href="<?= route('video/upload') ?>">
+                <a class="btn btn-honey" href="<?= Helpers::route('video/upload') ?>">
                     <i class="fa-solid fa-cloud-arrow-up"></i> Upload your first video
                 </a>
             </div>
