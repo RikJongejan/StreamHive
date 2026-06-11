@@ -1,13 +1,9 @@
 <?php
-// AuthService.php - Service voor authenticatielogica
-// Bevat de bedrijfslogica voor inloggen en registreren:
-// - Validatie van invoer (lege velden, wachtwoordlengte, overeenkomst)
-// - Inloggen via het UserModel
-// - Registreren en direct inloggen na aanmaken account
 class AuthService
 {
     private UserModel $userModel;
 
+    // __construct() wordt automatisch aangeroepen zodra je 'new AuthService($pdo)' schrijft
     public function __construct(PDO $pdo)
     {
         $this->userModel = new UserModel($pdo);
@@ -15,7 +11,7 @@ class AuthService
 
     public function login(string $email, string $password): array
     {
-        if (empty($email)) {
+        if (empty($email)) { // empty() controleert of een waarde leeg is (lege string, null, 0, false)
             return ['success' => false, 'error' => 'Fill in all the fields.'];
         }
 
@@ -54,7 +50,7 @@ class AuthService
             return ['success' => false, 'error' => 'Passwords do not match.'];
         }
 
-        if (strlen($password) < 8) {
+        if (strlen($password) < 8) { // strlen() telt het aantal tekens in een string
             return ['success' => false, 'error' => 'Password needs at least 8 characters.'];
         }
 
